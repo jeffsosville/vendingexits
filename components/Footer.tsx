@@ -7,7 +7,7 @@ export default function Footer() {
       title: 'Browse',
       links: [
         { label: "Today's Listings", href: '/daily-cleaning' },
-        { label: 'Full Index', href: '/cleaning-index' },
+        { label: 'Full Index', href: '/vending-index' },
         { label: 'Subscribe', href: '/subscribe' },
       ],
     },
