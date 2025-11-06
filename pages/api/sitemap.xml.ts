@@ -7,7 +7,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
 );
 
-const BASE_URL = 'https://cleaningexits.com';
+const BASE_URL = 'https://VendingExits.com';
 
 const slugifyCity = (city: string): string => {
   return city.toLowerCase().replace(/\s+/g, '-');

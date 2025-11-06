@@ -61,12 +61,12 @@ export default async function handler(
     const confirmUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/confirm?token=${confirmationToken}`;
     
     await resend.emails.send({
-      from: "Cleaning Exits <hello@cleaningexits.com>",
+      from: "Vending Exits <hello@VendingExits.com>",
       to: email,
-      subject: "Confirm your subscription to Cleaning Exits",
+      subject: "Confirm your subscription to Vending Exits",
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #059669; margin-bottom: 10px;">Welcome to Cleaning Exits!</h1>
+          <h1 style="color: #059669; margin-bottom: 10px;">Welcome to Vending Exits!</h1>
           <p style="font-size: 16px; color: #374151; line-height: 1.6;">
             You're one step away from receiving the <strong>Weekly Top 10</strong> cleaning business listings every Monday.
           </p>
@@ -89,7 +89,7 @@ export default async function handler(
           </p>
           <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 30px 0;" />
           <p style="color: #9CA3AF; font-size: 12px; text-align: center;">
-            Cleaning Exits • Verified cleaning business listings<br />
+            Vending Exits • Verified cleaning business listings<br />
             No spam, ever. Unsubscribe anytime.
           </p>
         </div>

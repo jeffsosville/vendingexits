@@ -63,14 +63,14 @@ export default function Unsubscribe() {
   return (
     <>
       <Head>
-        <title>Unsubscribe — Cleaning Exits</title>
+        <title>Unsubscribe — Vending Exits</title>
       </Head>
 
       <main className="mx-auto max-w-2xl px-4 py-16">
         <div className="rounded-2xl border bg-white p-8 shadow-sm">
           {status === "loading" && (
             <div className="text-center">
-              <div className="animate-spin h-12 w-12 border-4 border-emerald-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+              <div className="animate-spin h-12 w-12 border-4 border-amber-600 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-gray-600">Loading...</p>
             </div>
           )}
@@ -113,7 +113,7 @@ export default function Unsubscribe() {
               </p>
               <Link
                 href="/subscribe"
-                className="inline-block bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition"
+                className="inline-block bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition"
               >
                 Subscribe Again
               </Link>
@@ -127,7 +127,7 @@ export default function Unsubscribe() {
               <p className="text-gray-600 mb-6">{message}</p>
               <Link
                 href="/"
-                className="inline-block bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition"
+                className="inline-block bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition"
               >
                 Go Home
               </Link>

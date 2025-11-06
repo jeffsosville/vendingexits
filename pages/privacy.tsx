@@ -8,8 +8,8 @@ export default function Privacy() {
   return (
     <>
       <Head>
-        <title>Privacy Policy | Cleaning Exits</title>
-        <meta name="description" content="Privacy Policy for Cleaning Exits" />
+        <title>Privacy Policy | Vending Exits</title>
+        <meta name="description" content="Privacy Policy for Vending Exits" />
       </Head>
 
       <Header />
@@ -22,9 +22,9 @@ export default function Privacy() {
 
           <h2 className="text-2xl font-bold mt-8 mb-4">Introduction</h2>
           <p>
-            Cleaning Exits ("we," "our," or "us") respects your privacy. This Privacy Policy explains 
+            Vending Exits ("we," "our," or "us") respects your privacy. This Privacy Policy explains 
             how we collect, use, and protect your personal information when you use our website at 
-            cleaningexits.com (the "Site").
+            VendingExits.com (the "Site").
           </p>
 
           <h2 className="text-2xl font-bold mt-8 mb-4">Information We Collect</h2>
@@ -70,7 +70,7 @@ export default function Privacy() {
             <li><strong>Unsubscribe</strong> - You can unsubscribe from our emails at any time by 
             clicking the unsubscribe link in any email</li>
             <li><strong>Access and deletion</strong> - You can request access to or deletion of 
-            your personal information by contacting us at hello@cleaningexits.com</li>
+            your personal information by contacting us at hello@VendingExits.com</li>
           </ul>
 
           <h2 className="text-2xl font-bold mt-8 mb-4">Cookies</h2>
@@ -102,12 +102,12 @@ export default function Privacy() {
             If you have questions about this Privacy Policy, please contact us at:
           </p>
           <p>
-            <strong>Email:</strong> hello@cleaningexits.com
+            <strong>Email:</strong> hello@VendingExits.com
           </p>
         </div>
 
         <div className="text-center mt-8">
-          <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold">
+          <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
             ← Back to Home
           </Link>
         </div>

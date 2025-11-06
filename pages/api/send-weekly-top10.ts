@@ -74,7 +74,7 @@ function generateEmailHTML(top10: Listing[], weekOf: string, unsubscribeToken: s
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
           <!-- Header -->
           <div style="text-align: center; padding: 30px 0;">
-            <h1 style="color: #059669; margin: 0 0 8px 0; font-size: 32px;">Cleaning Exits</h1>
+            <h1 style="color: #059669; margin: 0 0 8px 0; font-size: 32px;">Vending Exits</h1>
             <p style="color: #6B7280; margin: 0; font-size: 16px;">Weekly Top 10 • ${weekOf}</p>
           </div>
 
@@ -95,14 +95,14 @@ function generateEmailHTML(top10: Listing[], weekOf: string, unsubscribeToken: s
             </p>
             <a href="${process.env.NEXT_PUBLIC_BASE_URL}" 
                style="display: inline-block; background: #059669; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-              Visit Cleaning Exits
+              Visit Vending Exits
             </a>
           </div>
 
           <!-- Footer -->
           <div style="text-align: center; padding: 20px; color: #9CA3AF; font-size: 12px;">
             <p style="margin: 0 0 8px 0;">
-              You're receiving this because you subscribed to Cleaning Exits.
+              You're receiving this because you subscribed to Vending Exits.
             </p>
             <p style="margin: 0;">
               <a href="${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?token=${unsubscribeToken}" 
@@ -198,7 +198,7 @@ export default async function handler(
         const html = generateEmailHTML(listings, weekOf, sub.unsubscribe_token);
 
         return resend.emails.send({
-          from: "Cleaning Exits <hello@cleaningexits.com>",
+          from: "Vending Exits <hello@VendingExits.com>",
           to: sub.email,
           subject: `Top 10 Cleaning Businesses This Week — ${weekOf}`,
           html,

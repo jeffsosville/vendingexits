@@ -9,7 +9,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
-const BASE_URL = 'https://cleaningexits.com';
+const BASE_URL = 'https://VendingExits.com';
 
 const generateSitemap = async () => {
   console.log('🔨 Generating sitemaps...');

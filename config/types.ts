@@ -177,7 +177,7 @@ export interface VerticalConfig {
  * Hostname to vertical mapping
  */
 export interface VerticalHostnameMapping {
-  /** Hostname (e.g., "cleaningexits.com") */
+  /** Hostname (e.g., "VendingExits.com") */
   hostname: string;
   /** Vertical slug */
   verticalSlug: string;

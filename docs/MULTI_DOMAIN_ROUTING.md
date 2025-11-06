@@ -6,7 +6,7 @@ This document explains how the multi-domain routing system works and how to use 
 
 The application supports multiple domains pointing to the same Next.js app, with each domain representing a different vertical (business category):
 
-- **cleaningexits.com** → Cleaning Services vertical
+- **VendingExits.com** → Cleaning Services vertical
 - **landscapeexits.com** → Landscape Services vertical
 - **hvacexits.com** → HVAC Services vertical
 - **localhost** → Defaults to Cleaning (for development)
@@ -33,7 +33,7 @@ export const cleaningVertical: VerticalConfig = {
   info: {
     name: 'Cleaning Services',
     slug: 'cleaning',
-    domain: 'cleaningexits.com',
+    domain: 'VendingExits.com',
     brandColor: '#3B82F6',
     logoPath: '/logos/cleaning-logo.svg',
   },

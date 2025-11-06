@@ -34,19 +34,19 @@ export default function ResidentialCleaningPage({ listings, totalCount, avgPrice
   return (
     <>
       <Head>
-        <title>Residential Cleaning Businesses for Sale | Cleaning Exits</title>
+        <title>Residential Cleaning Businesses for Sale | Vending Exits</title>
         <meta name="description" content={`${totalCount} residential cleaning businesses for sale. Browse verified home cleaning and maid service opportunities with detailed financials.`} />
-        <link rel="canonical" href="https://cleaningexits.com/residential-cleaning-for-sale" />
+        <link rel="canonical" href="https://VendingExits.com/residential-cleaning-for-sale" />
       </Head>
 
       <div className="min-h-screen bg-gray-50">
         <header className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 py-4">
-            <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold">← Back to Cleaning Exits</Link>
+            <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">← Back to Vending Exits</Link>
           </div>
         </header>
 
-        <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white py-16">
+        <div className="bg-gradient-to-br from-amber-600 to-emerald-800 text-white py-16">
           <div className="max-w-7xl mx-auto px-4">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Residential Cleaning Businesses for Sale</h1>
             <p className="text-xl text-emerald-100 mb-8">{totalCount} verified residential cleaning and maid service businesses available</p>
@@ -79,7 +79,7 @@ export default function ResidentialCleaningPage({ listings, totalCount, avgPrice
               <div className="flex flex-wrap gap-3">
                 {states.map((state: string) => (
                   <Link key={state} href={`/cleaning-businesses-for-sale/${state.toLowerCase()}`} 
-                    className="px-4 py-2 bg-white border rounded-lg hover:border-emerald-500 hover:text-emerald-600 transition">
+                    className="px-4 py-2 bg-white border rounded-lg hover:border-amber-500 hover:text-amber-600 transition">
                     {state}
                   </Link>
                 ))}
@@ -97,7 +97,7 @@ export default function ResidentialCleaningPage({ listings, totalCount, avgPrice
                   <div className="p-6">
                     <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2">{listing.header || 'Residential Cleaning Business'}</h3>
                     <div className="space-y-2 text-sm">
-                      <div className="flex justify-between"><span className="text-gray-600">Price</span><span className="font-bold text-emerald-600">{money(listing.price)}</span></div>
+                      <div className="flex justify-between"><span className="text-gray-600">Price</span><span className="font-bold text-amber-600">{money(listing.price)}</span></div>
                       {listing.cash_flow && <div className="flex justify-between"><span className="text-gray-600">Cash Flow</span><span>{money(listing.cash_flow)}</span></div>}
                       {listing.revenue && <div className="flex justify-between"><span className="text-gray-600">Revenue</span><span>{money(parseRevenue(listing.revenue))}</span></div>}
                       <div className="flex justify-between pt-2 border-t"><span className="text-gray-600">Location</span><span className="font-medium">{listing.city && listing.state ? `${listing.city}, ${listing.state}` : listing.state || '—'}</span></div>

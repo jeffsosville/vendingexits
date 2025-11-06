@@ -14,7 +14,7 @@ export function getVerticalBySlug(slug: string): VerticalConfig | null {
 /**
  * Get vertical configuration by hostname
  *
- * @param hostname - The hostname to look up (e.g., 'cleaningexits.com')
+ * @param hostname - The hostname to look up (e.g., 'VendingExits.com')
  * @returns The vertical configuration or the default vertical if not found
  */
 export function getVerticalByHostname(hostname: string): VerticalConfig {

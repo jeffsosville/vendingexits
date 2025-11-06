@@ -171,7 +171,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
     return listing.price >= min && listing.price <= max;
   });
 
-  const metaTitle = `${stats.total_listings} Cleaning Businesses for Sale in ${stateFullName} | Cleaning Exits`;
+  const metaTitle = `${stats.total_listings} Cleaning Businesses for Sale in ${stateFullName} | Vending Exits`;
   const metaDescription = `Browse ${stats.total_listings} verified cleaning businesses for sale in ${stateFullName}. Average price ${money(stats.avg_price)}. No franchises. Direct broker connections. SBA financing available.`;
 
   // Schema.org structured data
@@ -180,7 +180,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
     "@type": "CollectionPage",
     "name": metaTitle,
     "description": metaDescription,
-    "url": `https://cleaningexits.com/cleaning-businesses-for-sale/${state.toLowerCase()}`,
+    "url": `https://VendingExits.com/cleaning-businesses-for-sale/${state.toLowerCase()}`,
     "about": {
       "@type": "LocalBusiness",
       "name": "Cleaning Businesses",
@@ -196,13 +196,13 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
       <Head>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={`https://cleaningexits.com/cleaning-businesses-for-sale/${state.toLowerCase()}`} />
+        <link rel="canonical" href={`https://VendingExits.com/cleaning-businesses-for-sale/${state.toLowerCase()}`} />
         
         {/* Open Graph */}
         <meta property="og:title" content={metaTitle} />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://cleaningexits.com/cleaning-businesses-for-sale/${state.toLowerCase()}`} />
+        <meta property="og:url" content={`https://VendingExits.com/cleaning-businesses-for-sale/${state.toLowerCase()}`} />
         
         {/* Schema.org */}
         <script type="application/ld+json">
@@ -214,14 +214,14 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
         {/* Header */}
         <header className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 py-4">
-            <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold">
-              ← Cleaning Exits
+            <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
+              ← Vending Exits
             </Link>
           </div>
         </header>
 
         {/* Hero Section */}
-        <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white">
+        <div className="bg-gradient-to-br from-amber-600 to-emerald-700 text-white">
           <div className="max-w-7xl mx-auto px-4 py-12">
             <div className="mb-2">
               <Link href="/cleaning-businesses-for-sale" className="text-emerald-100 hover:text-white">
@@ -297,7 +297,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
                 onClick={() => setPriceFilter('all')}
                 className={`px-4 py-2 rounded-lg transition ${
                   priceFilter === 'all' 
-                    ? 'bg-emerald-600 text-white' 
+                    ? 'bg-amber-600 text-white' 
                     : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                 }`}
               >
@@ -307,7 +307,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
                 onClick={() => setPriceFilter('under-500k')}
                 className={`px-4 py-2 rounded-lg transition ${
                   priceFilter === 'under-500k' 
-                    ? 'bg-emerald-600 text-white' 
+                    ? 'bg-amber-600 text-white' 
                     : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                 }`}
               >
@@ -317,7 +317,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
                 onClick={() => setPriceFilter('500k-1m')}
                 className={`px-4 py-2 rounded-lg transition ${
                   priceFilter === '500k-1m' 
-                    ? 'bg-emerald-600 text-white' 
+                    ? 'bg-amber-600 text-white' 
                     : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                 }`}
               >
@@ -327,7 +327,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
                 onClick={() => setPriceFilter('1m-plus')}
                 className={`px-4 py-2 rounded-lg transition ${
                   priceFilter === '1m-plus' 
-                    ? 'bg-emerald-600 text-white' 
+                    ? 'bg-amber-600 text-white' 
                     : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                 }`}
               >
@@ -346,7 +346,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
               <Link
                 key={listing.id}
                 href={`/listing/${listing.id}`}
-                className="bg-white rounded-lg border hover:border-emerald-500 transition overflow-hidden group"
+                className="bg-white rounded-lg border hover:border-amber-500 transition overflow-hidden group"
               >
                 {listing.image_url && (
                   <div className="aspect-video bg-gray-200 overflow-hidden">
@@ -359,7 +359,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
                 )}
                 
                 <div className="p-5">
-                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-emerald-600 transition">
+                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-amber-600 transition">
                     {listing.title || 'Cleaning Business Opportunity'}
                   </h3>
                   
@@ -374,7 +374,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
                     {listing.cash_flow && (
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600">Cash Flow</span>
-                        <span className="font-semibold text-emerald-600">
+                        <span className="font-semibold text-amber-600">
                           {money(listing.cash_flow)}
                         </span>
                       </div>
@@ -387,7 +387,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
                     )}
                   </div>
                   
-                  <div className="text-emerald-600 font-semibold group-hover:underline">
+                  <div className="text-amber-600 font-semibold group-hover:underline">
                     View Details →
                   </div>
                 </div>
@@ -422,7 +422,7 @@ export default function StatePage({ state, stateFullName, listings, stats }: Sta
                 cash-flowing businesses without depleting their capital.
               </p>
               
-              <h3 className="text-xl font-bold text-gray-900 mb-3 mt-6">Why Cleaning Exits?</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3 mt-6">Why Vending Exits?</h3>
               <ul className="mb-4 space-y-2">
                 <li>✓ Verified cleaning businesses only - no franchises or lead generation schemes</li>
                 <li>✓ Direct relationships with 1,500+ business brokers nationwide</li>

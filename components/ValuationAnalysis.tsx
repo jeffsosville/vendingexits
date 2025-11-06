@@ -122,7 +122,7 @@ export default function ValuationAnalysis({ listingId }: { listingId: string }) 
               </div>
               <div>
                 <div className="text-xs text-gray-600 mb-1">Optimistic</div>
-                <div className="text-2xl font-bold text-emerald-600">
+                <div className="text-2xl font-bold text-amber-600">
                   {money(analysis.valuation_high)}
                 </div>
               </div>
@@ -142,7 +142,7 @@ export default function ValuationAnalysis({ listingId }: { listingId: string }) 
                 <span className="font-semibold text-gray-900 flex items-center gap-2">
                   ⚖️ Valuation Adjustments ({analysis.applied_adjustments.length})
                 </span>
-                <span className="text-emerald-600">
+                <span className="text-amber-600">
                   {expandedSections.adjustments ? '▼' : '▶'}
                 </span>
               </button>
@@ -152,7 +152,7 @@ export default function ValuationAnalysis({ listingId }: { listingId: string }) 
                     <div key={idx} className="bg-gray-50 p-3 rounded-lg text-sm">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-semibold text-gray-900">{adj.factor}</span>
-                        <span className={`font-bold ${adj.impact.startsWith('+') ? 'text-emerald-600' : 'text-red-600'}`}>
+                        <span className={`font-bold ${adj.impact.startsWith('+') ? 'text-amber-600' : 'text-red-600'}`}>
                           {adj.impact}
                         </span>
                       </div>
@@ -176,7 +176,7 @@ export default function ValuationAnalysis({ listingId }: { listingId: string }) 
                 <span className="font-semibold text-gray-900 flex items-center gap-2">
                   ⚠️ Risk Factors ({risks.length})
                 </span>
-                <span className="text-emerald-600">
+                <span className="text-amber-600">
                   {expandedSections.risks ? '▼' : '▶'}
                 </span>
               </button>

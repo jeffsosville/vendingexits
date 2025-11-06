@@ -8,7 +8,7 @@ export default function Resources() {
   return (
     <>
       <Head>
-        <title>Resources | Cleaning Exits</title>
+        <title>Resources | Vending Exits</title>
         <meta name="description" content="Guides and resources for buying and selling commercial cleaning businesses." />
       </Head>
 
@@ -25,20 +25,20 @@ export default function Resources() {
           {/* LATEST INSIGHTS SECTION */}
           <div className="mb-12 pb-12 border-b-2 border-gray-200">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <span className="text-emerald-600">📰</span>
+              <span className="text-amber-600">📰</span>
               Latest Insights
             </h2>
             
             <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-6 border-2 border-emerald-200">
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
-                  <span className="inline-block px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-full">
+                  <span className="inline-block px-3 py-1 bg-amber-600 text-white text-xs font-bold rounded-full">
                     NEW
                   </span>
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold mb-2">
-                    <Link href="/resources/utah-janitorial-deal" className="hover:text-emerald-600">
+                    <Link href="/resources/utah-janitorial-deal" className="hover:text-amber-600">
                       This Week's Deal: Why the Utah Janitorial Company is Hot
                     </Link>
                   </h3>
@@ -54,7 +54,7 @@ export default function Resources() {
                   </div>
                   <Link 
                     href="/resources/utah-janitorial-deal"
-                    className="inline-block px-4 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition text-sm"
+                    className="inline-block px-4 py-2 bg-amber-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition text-sm"
                   >
                     Read Full Analysis →
                   </Link>
@@ -68,7 +68,7 @@ export default function Resources() {
             <div>
               <h2 className="text-2xl font-bold mb-4">For Buyers</h2>
               <div className="space-y-6">
-                <div className="border-l-4 border-emerald-500 pl-4">
+                <div className="border-l-4 border-amber-500 pl-4">
                   <h3 className="font-semibold text-lg mb-2">What to Look For</h3>
                   <p className="text-gray-700 mb-3">
                     When evaluating a cleaning business acquisition, focus on:
@@ -82,7 +82,7 @@ export default function Resources() {
                   </ul>
                 </div>
 
-                <div className="border-l-4 border-emerald-500 pl-4">
+                <div className="border-l-4 border-amber-500 pl-4">
                   <h3 className="font-semibold text-lg mb-2">Typical Valuation Multiples</h3>
                   <p className="text-gray-700 mb-3">
                     Commercial cleaning businesses typically sell for:
@@ -97,7 +97,7 @@ export default function Resources() {
                   </p>
                 </div>
 
-                <div className="border-l-4 border-emerald-500 pl-4">
+                <div className="border-l-4 border-amber-500 pl-4">
                   <h3 className="font-semibold text-lg mb-2">Financing Your Purchase</h3>
                   <p className="text-gray-700 mb-3">
                     Most buyers finance 70-90% of the purchase price through:
@@ -109,11 +109,11 @@ export default function Resources() {
                   </ul>
                   <p className="text-gray-600 text-sm mt-3">
                     Need financing? We work with SBA lenders who specialize in cleaning business acquisitions.{' '}
-                    <Link href="/contact" className="text-emerald-600 hover:underline">Contact us</Link> for an intro.
+                    <Link href="/contact" className="text-amber-600 hover:underline">Contact us</Link> for an intro.
                   </p>
                 </div>
 
-                <div className="border-l-4 border-emerald-500 pl-4">
+                <div className="border-l-4 border-amber-500 pl-4">
                   <h3 className="font-semibold text-lg mb-2">Due Diligence Checklist</h3>
                   <p className="text-gray-700 mb-3">Before you buy, verify:</p>
                   <ul className="text-gray-700 space-y-1 ml-4">
@@ -133,7 +133,7 @@ export default function Resources() {
             <div>
               <h2 className="text-2xl font-bold mb-4">For Sellers</h2>
               <div className="space-y-6">
-                <div className="border-l-4 border-emerald-500 pl-4">
+                <div className="border-l-4 border-amber-500 pl-4">
                   <h3 className="font-semibold text-lg mb-2">Preparing Your Business for Sale</h3>
                   <p className="text-gray-700 mb-3">
                     Maximize your sale price by:
@@ -147,7 +147,7 @@ export default function Resources() {
                   </ul>
                 </div>
 
-                <div className="border-l-4 border-emerald-500 pl-4">
+                <div className="border-l-4 border-amber-500 pl-4">
                   <h3 className="font-semibold text-lg mb-2">When to Sell</h3>
                   <p className="text-gray-700 mb-3">
                     The best time to sell is when:
@@ -160,7 +160,7 @@ export default function Resources() {
                   </ul>
                   <p className="text-gray-700 mt-3">
                     Want to sell your cleaning business?{' '}
-                    <Link href="/sell" className="text-emerald-600 hover:underline font-semibold">
+                    <Link href="/sell" className="text-amber-600 hover:underline font-semibold">
                       Learn more →
                     </Link>
                   </p>
@@ -172,7 +172,7 @@ export default function Resources() {
             <div>
               <h2 className="text-2xl font-bold mb-4">Market Insights</h2>
               <div className="space-y-6">
-                <div className="border-l-4 border-emerald-500 pl-4">
+                <div className="border-l-4 border-amber-500 pl-4">
                   <h3 className="font-semibold text-lg mb-2">Industry Trends</h3>
                   <ul className="text-gray-700 space-y-2">
                     <li>• <strong>Consolidation wave</strong> - Larger players are acquiring smaller operators</li>
@@ -182,7 +182,7 @@ export default function Resources() {
                   </ul>
                 </div>
 
-                <div className="border-l-4 border-emerald-500 pl-4">
+                <div className="border-l-4 border-amber-500 pl-4">
                   <h3 className="font-semibold text-lg mb-2">What Buyers Want Most</h3>
                   <ul className="text-gray-700 space-y-1 ml-4">
                     <li>• Businesses with $500k-$5M in revenue</li>
@@ -205,13 +205,13 @@ export default function Resources() {
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/subscribe"
-                className="inline-block px-6 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition"
+                className="inline-block px-6 py-3 bg-amber-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition"
               >
                 Subscribe Now
               </Link>
               <Link
                 href="/contact"
-                className="inline-block px-6 py-3 bg-white text-emerald-600 border-2 border-emerald-600 font-semibold rounded-lg hover:bg-emerald-50 transition"
+                className="inline-block px-6 py-3 bg-white text-amber-600 border-2 border-amber-600 font-semibold rounded-lg hover:bg-emerald-50 transition"
               >
                 Contact Us
               </Link>
@@ -220,7 +220,7 @@ export default function Resources() {
         </div>
 
         <div className="text-center">
-          <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold">
+          <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
             ← Back to Home
           </Link>
         </div>

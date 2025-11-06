@@ -7,7 +7,7 @@ export const cleaningVertical: VerticalConfig = {
   info: {
     name: 'Cleaning Services',
     slug: 'cleaning',
-    domain: 'cleaningexits.com',
+    domain: 'VendingExits.com',
     brandColor: '#3B82F6', // Blue
     logoPath: '/logos/cleaning-logo.svg',
     faviconPath: '/favicons/cleaning-favicon.ico',
@@ -116,12 +116,12 @@ export const cleaningVertical: VerticalConfig = {
 
   emailTemplates: {
     welcome: {
-      subject: 'Welcome to CleaningExits - Your Cleaning Business Marketplace',
-      headerText: 'Welcome to CleaningExits!',
+      subject: 'Welcome to VendingExits - Your Cleaning Business Marketplace',
+      headerText: 'Welcome to VendingExits!',
       ctaText: 'Browse Cleaning Businesses',
     },
     weeklyTop10: {
-      subject: 'Top 10 Cleaning Businesses This Week | CleaningExits',
+      subject: 'Top 10 Cleaning Businesses This Week | VendingExits',
       headerText: 'This Week\'s Top Cleaning Business Opportunities',
       introText:
         'Here are the most promising cleaning businesses listed this week. Each has been verified and includes detailed financial information.',
@@ -134,8 +134,8 @@ export const cleaningVertical: VerticalConfig = {
       subject: 'Price Reduced: {{businessName}}',
       headerText: 'Price Drop Alert',
     },
-    fromEmail: 'listings@cleaningexits.com',
-    fromName: 'CleaningExits',
+    fromEmail: 'listings@VendingExits.com',
+    fromName: 'VendingExits',
   },
 
   terminology: {

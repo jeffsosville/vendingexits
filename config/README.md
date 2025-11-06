@@ -186,7 +186,7 @@ export {
 | Function | Usage | Description |
 |----------|-------|-------------|
 | `getVerticalBySlug(slug)` | `getVerticalBySlug('cleaning')` | Get config by slug |
-| `getVerticalByHostname(hostname)` | `getVerticalByHostname('cleaningexits.com')` | Get config by domain |
+| `getVerticalByHostname(hostname)` | `getVerticalByHostname('VendingExits.com')` | Get config by domain |
 | `getCurrentVertical(req)` | `getCurrentVertical(req)` | Server-side current vertical |
 | `getCurrentVerticalClient()` | `getCurrentVerticalClient()` | Client-side current vertical |
 | `getAllVerticals()` | `getAllVerticals()` | Get all vertical configs |
@@ -340,7 +340,7 @@ const filters = cleaningVertical.custom?.filters;
 The system automatically maps hostnames to verticals:
 
 ```
-cleaningexits.com     → Cleaning vertical
+VendingExits.com     → Cleaning vertical
 landscapeexits.com    → Landscape vertical
 hvacexits.com         → HVAC vertical
 localhost             → Cleaning (default for development)

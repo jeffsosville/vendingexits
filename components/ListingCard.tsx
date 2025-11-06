@@ -158,7 +158,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
           {isInternalLink ? (
             <Link
               href={listingUrl}
-              className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+              className="bg-gradient-to-r from-amber-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md"
             >
               View Details →
             </Link>

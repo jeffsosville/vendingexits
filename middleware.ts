@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
 
   // Get the vertical configuration based on hostname
   // This automatically handles:
-  // - Production domains (cleaningexits.com, landscapeexits.com, hvacexits.com)
+  // - Production domains (VendingExits.com, landscapeexits.com, hvacexits.com)
   // - www. subdomains
   // - localhost for development
   // - Fallback to default vertical if domain not recognized
