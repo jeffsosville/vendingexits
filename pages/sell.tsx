@@ -8,35 +8,35 @@ export default function Sell() {
   return (
     <>
       <Head>
-        <title>Sell Your Cleaning Business | Vending Exits</title>
-        <meta name="description" content="Get your commercial cleaning business in front of thousands of serious buyers." />
+        <title>Sell Your Vending Business | Vending Exits</title>
+        <meta name="description" content="Get your vending machine business in front of thousands of serious buyers." />
       </Head>
 
       <Header />
 
       <main className="mx-auto max-w-4xl px-4 py-12">
-        <h1 className="text-4xl font-bold mb-6">Sell Your Cleaning Business</h1>
+        <h1 className="text-4xl font-bold mb-6">Sell Your Vending Business</h1>
         
         <div className="bg-white rounded-xl border p-8 mb-8">
           <p className="text-lg text-gray-700 mb-6">
-            Get your commercial cleaning business in front of thousands of qualified buyers 
+            Get your vending machine business in front of thousands of qualified buyers 
             who are actively looking for opportunities like yours.
           </p>
 
-          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-6 mb-8">
-            <h2 className="text-xl font-bold mb-4">Why List With Us?</h2>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <h2 className="text-xl font-bold mb-4">Why List With VendingExits?</h2>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <span className="text-amber-600 font-bold text-xl">✓</span>
                 <div>
                   <strong>Targeted Audience</strong> - Our subscribers are specifically looking 
-                  for commercial cleaning businesses
+                  for vending machine businesses and cash-flow portfolios
                 </div>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-amber-600 font-bold text-xl">✓</span>
                 <div>
-                  <strong>Weekly Exposure</strong> - Featured in our Top 10 email to thousands of buyers
+                  <strong>Weekly Exposure</strong> - Featured in our Top 10 email to thousands of buyers every Monday
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -48,7 +48,13 @@ export default function Sell() {
               <li className="flex items-start gap-3">
                 <span className="text-amber-600 font-bold text-xl">✓</span>
                 <div>
-                  <strong>Fast Process</strong> - Get in front of buyers quickly
+                  <strong>Proven Track Record</strong> - From the team that facilitated 200+ ATM transactions worth $100M+
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-amber-600 font-bold text-xl">✓</span>
+                <div>
+                  <strong>Fast Process</strong> - Get in front of buyers quickly with transparent marketplace approach
                 </div>
               </li>
             </ul>
@@ -64,7 +70,7 @@ export default function Sell() {
                 <div>
                   <h3 className="font-semibold mb-1">Contact Us</h3>
                   <p className="text-gray-600">
-                    Email us at hello@VendingExits.com with basic details about your business
+                    Email us at hello@VendingExits.com with basic details about your vending route
                   </p>
                 </div>
               </div>
@@ -75,7 +81,7 @@ export default function Sell() {
                 <div>
                   <h3 className="font-semibold mb-1">We Review</h3>
                   <p className="text-gray-600">
-                    We'll review your business to ensure it meets our criteria
+                    We'll review your business to ensure it meets our criteria (real locations, verified revenue)
                   </p>
                 </div>
               </div>
@@ -86,7 +92,7 @@ export default function Sell() {
                 <div>
                   <h3 className="font-semibold mb-1">Get Listed</h3>
                   <p className="text-gray-600">
-                    Your business goes live on our site and in our weekly emails
+                    Your business goes live on our site and in our weekly Top 10 emails
                   </p>
                 </div>
               </div>
@@ -97,7 +103,7 @@ export default function Sell() {
                 <div>
                   <h3 className="font-semibold mb-1">Connect With Buyers</h3>
                   <p className="text-gray-600">
-                    We connect you with qualified buyers interested in your business
+                    We connect you with qualified buyers interested in your specific route
                   </p>
                 </div>
               </div>
@@ -107,20 +113,23 @@ export default function Sell() {
           <div className="bg-gray-50 rounded-lg p-6 mb-8">
             <h2 className="text-xl font-bold mb-4">What We Need</h2>
             <ul className="space-y-2 text-gray-700">
-              <li>• Business location</li>
-              <li>• Annual revenue</li>
-              <li>• Cash flow / SDE</li>
+              <li>• Route location(s) / geographic coverage</li>
+              <li>• Number of machines</li>
+              <li>• Machine types (snack, beverage, combo, specialty)</li>
+              <li>• Annual revenue / monthly gross</li>
+              <li>• Net cash flow (after all expenses)</li>
               <li>• Asking price</li>
-              <li>• Brief description of operations</li>
-              <li>• Number of employees (if applicable)</li>
+              <li>• Location contract terms</li>
+              <li>• Machine condition and age</li>
               <li>• Year established</li>
+              <li>• Reason for selling</li>
             </ul>
           </div>
 
           <div className="text-center">
             <a
-              href="mailto:hello@VendingExits.com?subject=Interested in Listing My Cleaning Business"
-              className="inline-block px-8 py-4 bg-amber-600 text-white font-bold text-lg rounded-lg hover:bg-emerald-700 transition"
+              href="mailto:hello@VendingExits.com?subject=Interested in Listing My Vending Business"
+              className="inline-block px-8 py-4 bg-amber-600 text-white font-bold text-lg rounded-lg hover:bg-amber-700 transition"
             >
               Get Started - Email Us
             </a>
@@ -134,7 +143,7 @@ export default function Sell() {
         </div>
 
         <div className="text-center">
-          <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
+          <Link href="/" className="text-amber-600 hover:text-amber-700 font-semibold">
             ← Back to Home
           </Link>
         </div>
@@ -144,3 +153,4 @@ export default function Sell() {
     </>
   );
 }
+
