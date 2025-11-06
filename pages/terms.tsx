@@ -8,8 +8,8 @@ export default function Terms() {
   return (
     <>
       <Head>
-        <title>Terms of Service | Cleaning Exits</title>
-        <meta name="description" content="Terms of Service for Cleaning Exits" />
+        <title>Terms of Service | Vending Exits</title>
+        <meta name="description" content="Terms of Service for Vending Exits" />
       </Head>
 
       <Header />
@@ -22,21 +22,21 @@ export default function Terms() {
 
           <h2 className="text-2xl font-bold mt-8 mb-4">1. Acceptance of Terms</h2>
           <p className="text-gray-700">
-            By accessing and using cleaningexits.com (the "Site"), you accept and agree to be bound 
+            By accessing and using VendingExits.com (the "Site"), you accept and agree to be bound 
             by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not 
             use the Site.
           </p>
 
           <h2 className="text-2xl font-bold mt-8 mb-4">2. Description of Service</h2>
           <p className="text-gray-700">
-            Cleaning Exits provides a platform for aggregating and displaying commercial cleaning 
+            Vending Exits provides a platform for aggregating and displaying commercial cleaning 
             business listings from various sources. We also provide email newsletters and related 
             services.
           </p>
 
           <h2 className="text-2xl font-bold mt-8 mb-4">3. No Broker-Dealer Relationship</h2>
           <p className="text-gray-700">
-            Cleaning Exits is NOT a licensed business broker or dealer. We do not represent buyers 
+            Vending Exits is NOT a licensed business broker or dealer. We do not represent buyers 
             or sellers in transactions. We simply aggregate publicly available listing information 
             and connect interested parties. Any transaction is between you and the listing broker 
             or seller directly.
@@ -72,7 +72,7 @@ export default function Terms() {
 
           <h2 className="text-2xl font-bold mt-8 mb-4">7. Intellectual Property</h2>
           <p className="text-gray-700">
-            The Site and its content (excluding third-party listings) are owned by Cleaning Exits 
+            The Site and its content (excluding third-party listings) are owned by Vending Exits 
             and protected by copyright and other intellectual property laws. You may not reproduce, 
             distribute, or create derivative works without our permission.
           </p>
@@ -92,7 +92,7 @@ export default function Terms() {
 
           <h2 className="text-2xl font-bold mt-8 mb-4">10. Limitation of Liability</h2>
           <p className="text-gray-700">
-            TO THE MAXIMUM EXTENT PERMITTED BY LAW, CLEANING EXITS SHALL NOT BE LIABLE FOR ANY 
+            TO THE MAXIMUM EXTENT PERMITTED BY LAW, Vending Exits SHALL NOT BE LIABLE FOR ANY 
             INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS 
             OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, OR OTHER 
             INTANGIBLE LOSSES.
@@ -100,7 +100,7 @@ export default function Terms() {
 
           <h2 className="text-2xl font-bold mt-8 mb-4">11. Indemnification</h2>
           <p className="text-gray-700">
-            You agree to indemnify and hold harmless Cleaning Exits from any claims, damages, losses, 
+            You agree to indemnify and hold harmless Vending Exits from any claims, damages, losses, 
             or expenses arising from your use of the Site or violation of these Terms.
           </p>
 
@@ -128,12 +128,12 @@ export default function Terms() {
             If you have questions about these Terms, please contact us at:
           </p>
           <p className="text-gray-700 mt-2">
-            <strong>Email:</strong> hello@cleaningexits.com
+            <strong>Email:</strong> hello@VendingExits.com
           </p>
         </div>
 
         <div className="text-center mt-8">
-          <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold">
+          <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
             ← Back to Home
           </Link>
         </div>

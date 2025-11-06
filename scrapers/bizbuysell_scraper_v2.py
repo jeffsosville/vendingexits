@@ -30,7 +30,7 @@ load_dotenv()
 VERTICAL_CONFIGS = {
     'cleaning': {
         'name': 'Cleaning Services',
-        'domain': 'cleaningexits.com',
+        'domain': 'VendingExits.com',
         'include_keywords': [
             'cleaning', 'janitorial', 'custodial', 'sanitation', 'maintenance',
             'maid service', 'housekeeping', 'carpet cleaning', 'window cleaning',

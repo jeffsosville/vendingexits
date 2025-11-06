@@ -93,7 +93,7 @@ export default function CleaningIndex({ listings, totalCount, hadError, errMsg }
   return (
     <>
       <Head>
-        <title>Cleaning Index — All Listings | Cleaning Exits</title>
+        <title>Cleaning Index — All Listings | Vending Exits</title>
         <meta
           name="description"
           content="Complete index of cleaning business listings. Browse all verified cleaning service businesses for sale."
@@ -103,7 +103,7 @@ export default function CleaningIndex({ listings, totalCount, hadError, errMsg }
       <main className="mx-auto max-w-6xl px-4 py-8">
         {/* Header */}
         <header className="mb-8">
-          <Link href="/" className="text-emerald-600 hover:underline mb-3 inline-block">
+          <Link href="/" className="text-amber-600 hover:underline mb-3 inline-block">
             ← Back to Home
           </Link>
           <h1 className="text-4xl font-extrabold tracking-tight mb-3">
@@ -176,7 +176,7 @@ export default function CleaningIndex({ listings, totalCount, hadError, errMsg }
                             href={listing.listing_url}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-emerald-600 hover:underline"
+                            className="text-amber-600 hover:underline"
                           >
                             View original →
                           </a>
@@ -203,7 +203,7 @@ export default function CleaningIndex({ listings, totalCount, hadError, errMsg }
         )}
 
         <footer className="mt-12 text-center text-sm text-gray-500">
-          <Link href="/" className="text-emerald-600 hover:underline">
+          <Link href="/" className="text-amber-600 hover:underline">
             Back to Home
           </Link>
         </footer>

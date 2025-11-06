@@ -187,7 +187,7 @@ export default function DailyCleaning({ rows, hadError, errMsg }: Props) {
   return (
     <>
       <Head>
-        <title>Cleaning Exits — Today’s Listings</title>
+        <title>Vending Exits — Today’s Listings</title>
         <meta
           name="description"
           content="Fresh, verified cleaning business listings added today. No franchises, no lead-gen noise."

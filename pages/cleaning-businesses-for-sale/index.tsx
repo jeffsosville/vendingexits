@@ -76,7 +76,7 @@ export const getStaticProps: GetStaticProps<AllStatesProps> = async () => {
 };
 
 export default function AllStatesPage({ states, totalListings }: AllStatesProps) {
-  const metaTitle = 'Cleaning Businesses for Sale by State | Cleaning Exits';
+  const metaTitle = 'Cleaning Businesses for Sale by State | Vending Exits';
   const metaDescription = `Browse ${totalListings.toLocaleString()} verified cleaning businesses for sale across ${states.length} states. No franchises. Direct broker connections. SBA financing available.`;
 
   return (
@@ -84,26 +84,26 @@ export default function AllStatesPage({ states, totalListings }: AllStatesProps)
       <Head>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />
-        <link rel="canonical" href="https://cleaningexits.com/cleaning-businesses-for-sale" />
+        <link rel="canonical" href="https://VendingExits.com/cleaning-businesses-for-sale" />
         
         <meta property="og:title" content={metaTitle} />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://cleaningexits.com/cleaning-businesses-for-sale" />
+        <meta property="og:url" content="https://VendingExits.com/cleaning-businesses-for-sale" />
       </Head>
 
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 py-4">
-            <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold">
-              ← Cleaning Exits
+            <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
+              ← Vending Exits
             </Link>
           </div>
         </header>
 
         {/* Hero Section */}
-        <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white">
+        <div className="bg-gradient-to-br from-amber-600 to-emerald-700 text-white">
           <div className="max-w-7xl mx-auto px-4 py-16 text-center">
             <h1 className="text-5xl font-bold mb-4">
               Cleaning Businesses for Sale by State
@@ -141,10 +141,10 @@ export default function AllStatesPage({ states, totalListings }: AllStatesProps)
                 <Link
                   key={state}
                   href={`/cleaning-businesses-for-sale/${state.toLowerCase()}`}
-                  className="bg-white border-2 hover:border-emerald-500 rounded-lg p-5 transition group"
+                  className="bg-white border-2 hover:border-amber-500 rounded-lg p-5 transition group"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-600">
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-amber-600">
                       {STATE_NAMES[state] || state}
                     </h3>
                     <span className="text-2xl">→</span>
@@ -166,7 +166,7 @@ export default function AllStatesPage({ states, totalListings }: AllStatesProps)
             <div className="prose max-w-none text-gray-700">
               <p className="text-lg mb-6">
                 The commercial cleaning industry offers one of the most stable, recession-resistant business models available. 
-                With {totalListings.toLocaleString()} verified listings across the United States, Cleaning Exits provides the 
+                With {totalListings.toLocaleString()} verified listings across the United States, Vending Exits provides the 
                 largest transparent marketplace for cleaning business acquisitions.
               </p>
 
@@ -175,19 +175,19 @@ export default function AllStatesPage({ states, totalListings }: AllStatesProps)
                   <h3 className="text-xl font-bold text-gray-900 mb-3">Industry Fundamentals</h3>
                   <ul className="space-y-2">
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600 font-bold">✓</span>
+                      <span className="text-amber-600 font-bold">✓</span>
                       <span>Recurring revenue model with long-term contracts</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600 font-bold">✓</span>
+                      <span className="text-amber-600 font-bold">✓</span>
                       <span>Asset-light operations with high cash conversion</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600 font-bold">✓</span>
+                      <span className="text-amber-600 font-bold">✓</span>
                       <span>Recession-resistant demand across all economic cycles</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600 font-bold">✓</span>
+                      <span className="text-amber-600 font-bold">✓</span>
                       <span>Multiple expansion opportunities in every market</span>
                     </li>
                   </ul>
@@ -197,19 +197,19 @@ export default function AllStatesPage({ states, totalListings }: AllStatesProps)
                   <h3 className="text-xl font-bold text-gray-900 mb-3">Acquisition Advantages</h3>
                   <ul className="space-y-2">
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600 font-bold">✓</span>
+                      <span className="text-amber-600 font-bold">✓</span>
                       <span>Immediate cash flow from day one of ownership</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600 font-bold">✓</span>
+                      <span className="text-amber-600 font-bold">✓</span>
                       <span>Trained employees and established operations</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600 font-bold">✓</span>
+                      <span className="text-amber-600 font-bold">✓</span>
                       <span>Proven client base that took years to build</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600 font-bold">✓</span>
+                      <span className="text-amber-600 font-bold">✓</span>
                       <span>SBA 7(a) financing up to 90% of purchase price</span>
                     </li>
                   </ul>
@@ -231,30 +231,30 @@ export default function AllStatesPage({ states, totalListings }: AllStatesProps)
                 who specialize in cleaning industry acquisitions.
               </p>
 
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">The Cleaning Exits Advantage</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">The Vending Exits Advantage</h3>
               <p className="mb-4">
-                Unlike traditional business-for-sale marketplaces, Cleaning Exits operates as a co-broker, representing 
+                Unlike traditional business-for-sale marketplaces, Vending Exits operates as a co-broker, representing 
                 buyer interests throughout the acquisition process. We provide:
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
+                  <span className="text-amber-600 font-bold">•</span>
                   <span>Transparent valuation analysis for every listing</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
+                  <span className="text-amber-600 font-bold">•</span>
                   <span>Direct relationships with 1,500+ business brokers nationwide</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
+                  <span className="text-amber-600 font-bold">•</span>
                   <span>No franchises, MLMs, or lead generation schemes</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
+                  <span className="text-amber-600 font-bold">•</span>
                   <span>Verified listings with real financial data</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-emerald-600 font-bold">•</span>
+                  <span className="text-amber-600 font-bold">•</span>
                   <span>Co-brokerage representation at no cost to buyers</span>
                 </li>
               </ul>
@@ -268,7 +268,7 @@ export default function AllStatesPage({ states, totalListings }: AllStatesProps)
                 </p>
                 <Link 
                   href="/#subscribe"
-                  className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-lg transition"
+                  className="inline-block bg-amber-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-lg transition"
                 >
                   Get Started →
                 </Link>

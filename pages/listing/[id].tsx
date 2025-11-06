@@ -172,12 +172,12 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
         "availability": "https://schema.org/InStock",
         "seller": {
           "@type": "Organization",
-          "name": listing.broker_account || "Cleaning Exits"
+          "name": listing.broker_account || "Vending Exits"
         }
       },
       "brand": {
         "@type": "Brand",
-        "name": "Cleaning Exits"
+        "name": "Vending Exits"
       },
       "additionalProperty": [
         listing.revenue ? {
@@ -241,11 +241,11 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
   return (
     <>
       <Head>
-        <title>{listing.title || 'Business Listing'} | Cleaning Exits</title>
+        <title>{listing.title || 'Business Listing'} | Vending Exits</title>
         <meta name="description" content={listing.description?.substring(0, 160) || 'Commercial cleaning business for sale'} />
         
         {/* Canonical URL */}
-        <link rel="canonical" href={`https://cleaningexits.com/listing/${listing.id}`} />
+        <link rel="canonical" href={`https://VendingExits.com/listing/${listing.id}`} />
         
         {/* Schema.org Structured Data */}
         <script 
@@ -258,23 +258,23 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
         {/* Open Graph Tags */}
         <meta property="og:title" content={listing.title || 'Business Listing'} />
         <meta property="og:description" content={listing.description?.substring(0, 160)} />
-        <meta property="og:image" content={listing.image_url || 'https://cleaningexits.com/og-default.jpg'} />
+        <meta property="og:image" content={listing.image_url || 'https://VendingExits.com/og-default.jpg'} />
         <meta property="og:type" content="product" />
-        <meta property="og:url" content={`https://cleaningexits.com/listing/${listing.id}`} />
+        <meta property="og:url" content={`https://VendingExits.com/listing/${listing.id}`} />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={listing.title || 'Business Listing'} />
         <meta name="twitter:description" content={listing.description?.substring(0, 160)} />
-        <meta name="twitter:image" content={listing.image_url || 'https://cleaningexits.com/og-default.jpg'} />
+        <meta name="twitter:image" content={listing.image_url || 'https://VendingExits.com/og-default.jpg'} />
       </Head>
 
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-white border-b">
           <div className="max-w-6xl mx-auto px-4 py-4">
-            <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold">
-              ← Back to Cleaning Exits
+            <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
+              ← Back to Vending Exits
             </Link>
           </div>
         </header>
@@ -310,7 +310,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                 {listing.cash_flow && (
                   <div className="bg-white p-4 rounded-lg border">
                     <div className="text-sm text-gray-600">Cash Flow (SDE)</div>
-                    <div className="text-xl font-bold text-emerald-600">
+                    <div className="text-xl font-bold text-amber-600">
                       {money(listing.cash_flow)}
                     </div>
                   </div>
@@ -380,19 +380,19 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                     <div className="bg-white rounded-lg p-6 mb-4">
                       <div className="text-left space-y-3">
                         <div className="flex items-center gap-3">
-                          <span className="text-emerald-600 text-xl">✓</span>
+                          <span className="text-amber-600 text-xl">✓</span>
                           <span className="text-gray-700">Complete financial statements</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-emerald-600 text-xl">✓</span>
+                          <span className="text-amber-600 text-xl">✓</span>
                           <span className="text-gray-700">Direct broker contact info</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-emerald-600 text-xl">✓</span>
+                          <span className="text-amber-600 text-xl">✓</span>
                           <span className="text-gray-700">Detailed valuation & ROI analysis</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-emerald-600 text-xl">✓</span>
+                          <span className="text-amber-600 text-xl">✓</span>
                           <span className="text-gray-700">Key due diligence questions</span>
                         </div>
                       </div>
@@ -492,7 +492,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                         placeholder="your@email.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
                         required
                       />
                       
@@ -502,7 +502,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                           placeholder="Phone (optional)"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
                         />
                       )}
                     </div>
@@ -510,7 +510,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                     <button
                       onClick={handleEmailCapture}
                       disabled={submitting || !email}
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed mb-3 text-lg"
+                      className="w-full bg-amber-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed mb-3 text-lg"
                     >
                       {submitting ? 'Processing...' : 'Get Full Details →'}
                     </button>
@@ -518,7 +518,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                     <div className="border-t border-gray-200 pt-3 mb-3">
                       <a
                         href="#"
-                        className="block w-full text-center bg-white hover:bg-gray-50 text-emerald-700 font-semibold py-3 px-6 rounded-lg border-2 border-emerald-600 transition"
+                        className="block w-full text-center bg-white hover:bg-gray-50 text-emerald-700 font-semibold py-3 px-6 rounded-lg border-2 border-amber-600 transition"
                       >
                         Schedule 15-Min Call
                       </a>
@@ -550,7 +550,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                     
                     <a
                       href="#"
-                      className="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition mb-3"
+                      className="block w-full text-center bg-amber-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition mb-3"
                     >
                       Schedule Strategy Call
                     </a>
@@ -571,22 +571,22 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                 )}
 
                 <div className="mt-6 pt-6 border-t">
-                  <h4 className="font-semibold text-gray-900 mb-3">Why Cleaning Exits?</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">Why Vending Exits?</h4>
                   <ul className="text-sm text-gray-600 space-y-2">
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600">✓</span>
+                      <span className="text-amber-600">✓</span>
                       <span>Verified cleaning businesses only</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600">✓</span>
+                      <span className="text-amber-600">✓</span>
                       <span>No franchises or lead-gen</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600">✓</span>
+                      <span className="text-amber-600">✓</span>
                       <span>Direct broker relationships</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600">✓</span>
+                      <span className="text-amber-600">✓</span>
                       <span>Automated valuation analysis</span>
                     </li>
                   </ul>

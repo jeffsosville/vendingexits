@@ -1,4 +1,4 @@
-# CleaningExits Top 10 Deep Dive System
+# VendingExits Top 10 Deep Dive System
 
 ## Overview
 This system automatically generates comprehensive, Utah-janitorial-style deep dive analyses for your top 10 featured listings.

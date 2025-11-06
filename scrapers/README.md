@@ -78,7 +78,7 @@ Production-ready scraping system for business-for-sale listings across 3 vertica
 ### 1. Install Dependencies
 
 ```bash
-cd /home/user/cleaningexits/scrapers
+cd /home/user/VendingExits/scrapers
 
 # Install Python packages
 pip install -r requirements.txt
@@ -106,7 +106,7 @@ playwright install chromium
 
 ### 3. Configure Environment
 
-Create `.env` file in `/home/user/cleaningexits/scrapers/`:
+Create `.env` file in `/home/user/VendingExits/scrapers/`:
 
 ```bash
 # Supabase credentials
@@ -331,7 +331,7 @@ python unified_broker_scraper_v2.py --vertical landscape --all
 ### Example 1: Scrape BizBuySell for Cleaning Vertical
 
 ```bash
-cd /home/user/cleaningexits/scrapers
+cd /home/user/VendingExits/scrapers
 python bizbuysell_scraper_v2.py --vertical cleaning --max-pages 50
 ```
 
@@ -668,7 +668,7 @@ WHERE vertical_slug = 'cleaning'
 
 **Solution**: Create `.env` file with Supabase credentials:
 ```bash
-cd /home/user/cleaningexits/scrapers
+cd /home/user/VendingExits/scrapers
 cat > .env << EOF
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-service-role-key
@@ -761,7 +761,7 @@ crontab -e
 
 Add:
 ```bash
-0 2 * * * cd /home/user/cleaningexits/scrapers && /usr/bin/python3 orchestrator.py >> /var/log/scraper-$(date +\%Y\%m\%d).log 2>&1
+0 2 * * * cd /home/user/VendingExits/scrapers && /usr/bin/python3 orchestrator.py >> /var/log/scraper-$(date +\%Y\%m\%d).log 2>&1
 ```
 
 ### Docker Deployment

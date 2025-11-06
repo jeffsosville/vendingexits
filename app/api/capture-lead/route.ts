@@ -220,21 +220,21 @@ export async function POST(request: NextRequest) {
           <li>SBA financing connections</li>
         </ul>
         <p style="margin: 25px 0; text-align: center;">
-          <a href="${process.env.CALENDLY_LINK || 'https://cleaningexits.com'}" class="button">Schedule 15-Min Call</a>
+          <a href="${process.env.CALENDLY_LINK || 'https://VendingExits.com'}" class="button">Schedule 15-Min Call</a>
         </p>
       </div>
 
       <div class="footer">
         <p><strong>Jeff & John Sosville</strong><br>
-        Founders, Cleaning Exits<br>
-        ${process.env.YOUR_EMAIL || 'info@cleaningexits.com'}${process.env.YOUR_PHONE ? '<br>' + process.env.YOUR_PHONE : ''}</p>
+        Founders, Vending Exits<br>
+        ${process.env.YOUR_EMAIL || 'info@VendingExits.com'}${process.env.YOUR_PHONE ? '<br>' + process.env.YOUR_PHONE : ''}</p>
         
         <p style="margin-top: 30px; font-size: 13px; font-style: italic;">
           P.S. These listings move fast. If you're serious, contact the broker today and CC us so we can support your due diligence.
         </p>
         
         <p style="margin-top: 25px; font-size: 12px; color: #9ca3af;">
-          You're receiving this because you requested details from CleaningExits.com.<br>
+          You're receiving this because you requested details from VendingExits.com.<br>
           You'll also receive our weekly Top 10 cleaning business listings every Monday.
         </p>
       </div>
@@ -251,7 +251,7 @@ export async function POST(request: NextRequest) {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            from: 'Jeff at Cleaning Exits <jeff@cleaningexits.com>',
+            from: 'Jeff at Vending Exits <jeff@VendingExits.com>',
             to: email,
             subject: `Your Details: ${leadData.listing_title || 'Cleaning Business'} - ${leadData.listing_location || ''}`,
             html: emailHtml

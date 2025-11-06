@@ -39,12 +39,12 @@ export default function Subscribe() {
   return (
     <>
       <Head>
-        <title>Subscribe — Cleaning Exits</title>
+        <title>Subscribe — Vending Exits</title>
       </Head>
 
       <main className="mx-auto max-w-2xl px-4 py-16">
         <div className="text-center mb-8">
-          <Link href="/" className="text-emerald-600 hover:text-emerald-700 text-sm">
+          <Link href="/" className="text-amber-600 hover:text-emerald-700 text-sm">
             ← Back to home
           </Link>
         </div>
@@ -70,7 +70,7 @@ export default function Subscribe() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none"
                 disabled={status === "loading"}
               />
             </div>
@@ -78,7 +78,7 @@ export default function Subscribe() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === "loading" ? "Subscribing..." : "Subscribe"}
             </button>
@@ -98,19 +98,19 @@ export default function Subscribe() {
 
           <div className="mt-8 pt-6 border-t space-y-2 text-sm text-gray-600">
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
               <span>Curated Top 10 every Monday morning</span>
             </div>
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
               <span>No spam, ever — unsubscribe anytime</span>
             </div>
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
               <span>Verified listings only — no franchise funnels</span>
@@ -119,7 +119,7 @@ export default function Subscribe() {
         </div>
 
         <p className="text-center text-sm text-gray-500 mt-6">
-          Join buyers who trust Cleaning Exits for verified opportunities
+          Join buyers who trust Vending Exits for verified opportunities
         </p>
       </main>
     </>

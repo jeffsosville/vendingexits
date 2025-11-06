@@ -134,7 +134,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
   return (
     <>
       <Head>
-        <title>{listing.title || 'Business Listing'} | Cleaning Exits</title>
+        <title>{listing.title || 'Business Listing'} | Vending Exits</title>
         <meta name="description" content={listing.description?.substring(0, 160) || 'Commercial cleaning business for sale'} />
       </Head>
 
@@ -142,8 +142,8 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
         {/* Header */}
         <header className="bg-white border-b">
           <div className="max-w-6xl mx-auto px-4 py-4">
-            <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold">
-              ← Back to Cleaning Exits
+            <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
+              ← Back to Vending Exits
             </Link>
           </div>
         </header>
@@ -179,7 +179,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                 {listing.cash_flow && (
                   <div className="bg-white p-4 rounded-lg border">
                     <div className="text-sm text-gray-600">Cash Flow</div>
-                    <div className="text-xl font-bold text-emerald-600">
+                    <div className="text-xl font-bold text-amber-600">
                       {money(listing.cash_flow)}
                     </div>
                   </div>
@@ -289,7 +289,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                   href={listing.listing_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg text-center transition"
+                  className="flex-1 bg-amber-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg text-center transition"
                 >
                   View Original Listing →
                 </a>
@@ -311,12 +311,12 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                       placeholder="your@email.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                     <button
                       onClick={handleEmailCapture}
                       disabled={submitting || !email}
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition disabled:opacity-50"
+                      className="w-full bg-amber-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition disabled:opacity-50"
                     >
                       {submitting ? 'Processing...' : 'Get Broker Details'}
                     </button>
@@ -334,7 +334,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                       href={listing.listing_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg text-center transition"
+                      className="block w-full bg-amber-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg text-center transition"
                     >
                       View on Broker Site
                     </a>
@@ -342,22 +342,22 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                 )}
 
                 <div className="mt-6 pt-6 border-t">
-                  <h4 className="font-semibold text-gray-900 mb-3">Why Cleaning Exits?</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">Why Vending Exits?</h4>
                   <ul className="text-sm text-gray-600 space-y-2">
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600">✓</span>
+                      <span className="text-amber-600">✓</span>
                       <span>Verified cleaning businesses only</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600">✓</span>
+                      <span className="text-amber-600">✓</span>
                       <span>No franchises or lead-gen</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600">✓</span>
+                      <span className="text-amber-600">✓</span>
                       <span>Direct broker relationships</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-emerald-600">✓</span>
+                      <span className="text-amber-600">✓</span>
                       <span>Automated valuation analysis</span>
                     </li>
                   </ul>

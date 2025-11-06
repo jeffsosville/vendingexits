@@ -158,7 +158,7 @@ export default function CityPage({ state, stateFullName, city, listings }: CityP
     .filter(l => l.price)
     .reduce((sum, l) => sum + (l.price || 0), 0) / listings.filter(l => l.price).length;
 
-  const metaTitle = `${listings.length} Cleaning Businesses for Sale in ${city}, ${state} | Cleaning Exits`;
+  const metaTitle = `${listings.length} Cleaning Businesses for Sale in ${city}, ${state} | Vending Exits`;
   const metaDescription = `Buy an established cleaning business in ${city}, ${stateFullName}. ${listings.length} verified listings. Average price ${money(avgPrice)}. SBA financing available. No franchises.`;
 
   // Schema.org structured data
@@ -188,7 +188,7 @@ export default function CityPage({ state, stateFullName, city, listings }: CityP
       <Head>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={`https://cleaningexits.com/cleaning-businesses-for-sale/${state.toLowerCase()}/${slugifyCity(city)}`} />
+        <link rel="canonical" href={`https://VendingExits.com/cleaning-businesses-for-sale/${state.toLowerCase()}/${slugifyCity(city)}`} />
         
         <meta property="og:title" content={metaTitle} />
         <meta property="og:description" content={metaDescription} />
@@ -203,14 +203,14 @@ export default function CityPage({ state, stateFullName, city, listings }: CityP
         {/* Header */}
         <header className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 py-4">
-            <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold">
-              ← Cleaning Exits
+            <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
+              ← Vending Exits
             </Link>
           </div>
         </header>
 
         {/* Hero Section */}
-        <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white">
+        <div className="bg-gradient-to-br from-amber-600 to-emerald-700 text-white">
           <div className="max-w-7xl mx-auto px-4 py-12">
             <div className="mb-2 text-sm">
               <Link href="/cleaning-businesses-for-sale" className="text-emerald-100 hover:text-white">
@@ -265,7 +265,7 @@ export default function CityPage({ state, stateFullName, city, listings }: CityP
               <Link
                 key={listing.id}
                 href={`/listing/${listing.id}`}
-                className="bg-white rounded-lg border hover:border-emerald-500 transition overflow-hidden group"
+                className="bg-white rounded-lg border hover:border-amber-500 transition overflow-hidden group"
               >
                 {listing.image_url && (
                   <div className="aspect-video bg-gray-200 overflow-hidden">
@@ -278,7 +278,7 @@ export default function CityPage({ state, stateFullName, city, listings }: CityP
                 )}
                 
                 <div className="p-5">
-                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-emerald-600 transition">
+                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-amber-600 transition">
                     {listing.title || 'Cleaning Business Opportunity'}
                   </h3>
                   
@@ -293,7 +293,7 @@ export default function CityPage({ state, stateFullName, city, listings }: CityP
                     {listing.cash_flow && (
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600">Cash Flow</span>
-                        <span className="font-semibold text-emerald-600">
+                        <span className="font-semibold text-amber-600">
                           {money(listing.cash_flow)}
                         </span>
                       </div>
@@ -309,7 +309,7 @@ export default function CityPage({ state, stateFullName, city, listings }: CityP
                     )}
                   </div>
                   
-                  <div className="text-emerald-600 font-semibold group-hover:underline">
+                  <div className="text-amber-600 font-semibold group-hover:underline">
                     View Details →
                   </div>
                 </div>
@@ -353,7 +353,7 @@ export default function CityPage({ state, stateFullName, city, listings }: CityP
               
               <h3 className="text-xl font-bold text-gray-900 mb-3 mt-6">Our Co-Brokerage Advantage</h3>
               <p className="mb-4">
-                Unlike traditional marketplaces, Cleaning Exits operates as a co-broker, representing YOUR interests throughout 
+                Unlike traditional marketplaces, Vending Exits operates as a co-broker, representing YOUR interests throughout 
                 the acquisition process at no cost to you. We provide transparent valuation analysis, connect you directly with 
                 listing brokers, and guide you through due diligence and closing.
               </p>

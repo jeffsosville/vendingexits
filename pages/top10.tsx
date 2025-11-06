@@ -45,7 +45,7 @@ export default function Top10({ listings }: { listings: Listing[] }) {
   return (
     <div className="min-h-screen p-8">
       <Head>
-        <title>Top 10 | CleaningExits</title>
+        <title>Top 10 | VendingExits</title>
       </Head>
       
       <h1 className="text-4xl font-bold mb-8">Top 10 Cleaning Businesses</h1>

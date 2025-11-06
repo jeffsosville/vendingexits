@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS vertical_configs (
 
   -- Basic info
   name TEXT NOT NULL,                     -- 'Cleaning Services'
-  domain TEXT NOT NULL,                   -- 'cleaningexits.com'
+  domain TEXT NOT NULL,                   -- 'VendingExits.com'
   brand_color TEXT,                       -- '#3B82F6'
 
   -- Keywords for filtering
@@ -211,7 +211,7 @@ VALUES
   (
     'cleaning',
     'Cleaning Services',
-    'cleaningexits.com',
+    'VendingExits.com',
     '#3B82F6',
     ARRAY['cleaning', 'janitorial', 'custodial', 'sanitation', 'maintenance', 'maid service', 'housekeeping', 'carpet cleaning', 'window cleaning', 'pressure washing'],
     ARRAY['restaurant', 'food service', 'hvac', 'plumbing', 'electrical', 'landscaping', 'lawn care'],

@@ -8,7 +8,7 @@ export default function UtahJanitorialDeal() {
   return (
     <>
       <Head>
-        <title>This Week's Deal: Why the Utah Janitorial Company is Hot | Cleaning Exits</title>
+        <title>This Week's Deal: Why the Utah Janitorial Company is Hot | Vending Exits</title>
         <meta name="description" content="Deep-dive analysis of a $2.5M revenue cleaning business with $600K cash flow. Valuation, financing, risks, and opportunities." />
       </Head>
 
@@ -17,9 +17,9 @@ export default function UtahJanitorialDeal() {
       <main className="mx-auto max-w-4xl px-4 py-12">
         {/* Breadcrumbs */}
         <div className="text-sm text-gray-600 mb-6">
-          <Link href="/" className="hover:text-emerald-600">Home</Link>
+          <Link href="/" className="hover:text-amber-600">Home</Link>
           {' '}/{' '}
-          <Link href="/resources" className="hover:text-emerald-600">Resources</Link>
+          <Link href="/resources" className="hover:text-amber-600">Resources</Link>
           {' '}/{' '}
           <span>Utah Janitorial Deal</span>
         </div>
@@ -103,7 +103,7 @@ export default function UtahJanitorialDeal() {
               <li><strong>Likely range: 3.5-4.5x SDE</strong></li>
             </ul>
 
-            <div className="bg-emerald-50 border-l-4 border-emerald-500 p-6 my-8">
+            <div className="bg-emerald-50 border-l-4 border-amber-500 p-6 my-8">
               <p className="font-semibold mb-2">Asking price estimate:</p>
               <ul className="space-y-1">
                 <li>Low: $2.1M (3.5x $600K)</li>
@@ -197,7 +197,7 @@ export default function UtahJanitorialDeal() {
             </p>
 
             {/* CTA Section */}
-            <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl p-8 my-12 text-white">
+            <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl p-8 my-12 text-white">
               <h3 className="text-2xl font-bold mb-4">Ready to Move on This Deal?</h3>
               <p className="mb-6">
                 This listing won't last long. Here's how to take action:
@@ -207,7 +207,7 @@ export default function UtahJanitorialDeal() {
                   href="https://murphybusiness.com/business-brokerage/detail/22599/thriving-commercial-janitorial-company/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full bg-white text-emerald-600 font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition text-center"
+                  className="block w-full bg-white text-amber-600 font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition text-center"
                 >
                   View Full Listing on Murphy Business →
                 </a>
@@ -246,7 +246,7 @@ export default function UtahJanitorialDeal() {
                     href="https://murphybusiness.com/business-brokerage/detail/22599/thriving-commercial-janitorial-company/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-emerald-600 hover:underline"
+                    className="text-amber-600 hover:underline"
                   >
                     Murphy Business - Thriving Commercial Janitorial Company →
                   </a>
@@ -254,14 +254,14 @@ export default function UtahJanitorialDeal() {
 
                 <div>
                   <h4 className="font-semibold mb-2">Need SBA Financing?</h4>
-                  <Link href="/contact" className="text-emerald-600 hover:underline">
+                  <Link href="/contact" className="text-amber-600 hover:underline">
                     We work with lenders who specialize in cleaning business acquisitions →
                   </Link>
                 </div>
 
                 <div>
                   <h4 className="font-semibold mb-2">Want More Deals Like This?</h4>
-                  <Link href="/subscribe" className="text-emerald-600 hover:underline">
+                  <Link href="/subscribe" className="text-amber-600 hover:underline">
                     Subscribe to our weekly Top 10 →
                   </Link>
                 </div>
@@ -282,7 +282,7 @@ export default function UtahJanitorialDeal() {
 
         {/* Back to Resources */}
         <div className="text-center mt-12">
-          <Link href="/resources" className="text-emerald-600 hover:text-emerald-700 font-semibold">
+          <Link href="/resources" className="text-amber-600 hover:text-emerald-700 font-semibold">
             ← Back to Resources
           </Link>
         </div>

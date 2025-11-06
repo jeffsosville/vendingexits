@@ -8,8 +8,8 @@ export default function Contact() {
   return (
     <>
       <Head>
-        <title>Contact Us | Cleaning Exits</title>
-        <meta name="description" content="Get in touch with Cleaning Exits about buying or selling a cleaning business." />
+        <title>Contact Us | Vending Exits</title>
+        <meta name="description" content="Get in touch with Vending Exits about buying or selling a cleaning business." />
       </Head>
 
       <Header />
@@ -27,10 +27,10 @@ export default function Contact() {
             <div>
               <h2 className="text-xl font-semibold mb-2">Email</h2>
               <a 
-                href="mailto:hello@cleaningexits.com" 
-                className="text-emerald-600 hover:text-emerald-700 text-lg"
+                href="mailto:hello@VendingExits.com" 
+                className="text-amber-600 hover:text-emerald-700 text-lg"
               >
-                hello@cleaningexits.com
+                hello@VendingExits.com
               </a>
             </div>
 
@@ -46,8 +46,8 @@ export default function Contact() {
               <h2 className="text-xl font-semibold mb-2">For Sellers</h2>
               <p className="text-gray-600">
                 Want to list your cleaning business? Email us at{' '}
-                <a href="mailto:hello@cleaningexits.com" className="text-emerald-600 hover:underline">
-                  hello@cleaningexits.com
+                <a href="mailto:hello@VendingExits.com" className="text-amber-600 hover:underline">
+                  hello@VendingExits.com
                 </a>
                 {' '}and we'll get back to you within 24 hours.
               </p>
@@ -57,8 +57,8 @@ export default function Contact() {
               <h2 className="text-xl font-semibold mb-2">For Brokers</h2>
               <p className="text-gray-600">
                 Want to partner with us or get your listings featured? Let's talk.{' '}
-                <a href="mailto:hello@cleaningexits.com" className="text-emerald-600 hover:underline">
-                  hello@cleaningexits.com
+                <a href="mailto:hello@VendingExits.com" className="text-amber-600 hover:underline">
+                  hello@VendingExits.com
                 </a>
               </p>
             </div>
@@ -66,7 +66,7 @@ export default function Contact() {
         </div>
 
         <div className="text-center">
-          <Link href="/" className="text-emerald-600 hover:text-emerald-700 font-semibold">
+          <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
             ← Back to Home
           </Link>
         </div>

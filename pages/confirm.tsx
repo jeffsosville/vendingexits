@@ -42,14 +42,14 @@ export default function Confirm() {
   return (
     <>
       <Head>
-        <title>Confirm Subscription — Cleaning Exits</title>
+        <title>Confirm Subscription — Vending Exits</title>
       </Head>
 
       <main className="mx-auto max-w-2xl px-4 py-16 text-center">
         <div className="rounded-2xl border bg-white p-8 shadow-sm">
           {status === "loading" && (
             <>
-              <div className="animate-spin h-12 w-12 border-4 border-emerald-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+              <div className="animate-spin h-12 w-12 border-4 border-amber-600 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-gray-600">Confirming your subscription...</p>
             </>
           )}
@@ -61,7 +61,7 @@ export default function Confirm() {
               <p className="text-gray-600 mb-6">{message}</p>
               <Link
                 href="/"
-                className="inline-block bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition"
+                className="inline-block bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition"
               >
                 Go to Homepage
               </Link>
@@ -75,7 +75,7 @@ export default function Confirm() {
               <p className="text-gray-600 mb-6">{message}</p>
               <Link
                 href="/subscribe"
-                className="inline-block bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition"
+                className="inline-block bg-amber-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition"
               >
                 Try Again
               </Link>

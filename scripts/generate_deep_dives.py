@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate Deep Dive Analysis for Top 10 CleaningExits Listings
+Generate Deep Dive Analysis for Top 10 VendingExits Listings
 Run this manually whenever you want to generate/update deep dives
 """
 
@@ -375,7 +375,7 @@ def generate_deep_dive_html(listing):
 
 def main():
     print("="*80)
-    print("CLEANINGEXITS TOP 10 DEEP DIVE GENERATOR")
+    print("VendingExits TOP 10 DEEP DIVE GENERATOR")
     print("="*80)
     print()
     

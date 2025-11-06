@@ -15,8 +15,8 @@ export const verticalRegistry: VerticalRegistry = {
 
   hostnameMappings: [
     // Cleaning vertical
-    { hostname: 'cleaningexits.com', verticalSlug: 'cleaning', isPrimary: true },
-    { hostname: 'www.cleaningexits.com', verticalSlug: 'cleaning', isPrimary: false },
+    { hostname: 'VendingExits.com', verticalSlug: 'cleaning', isPrimary: true },
+    { hostname: 'www.VendingExits.com', verticalSlug: 'cleaning', isPrimary: false },
     { hostname: 'localhost', verticalSlug: 'cleaning', isPrimary: false }, // Development
 
     // Landscape vertical
