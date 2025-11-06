@@ -44,7 +44,7 @@ export default function Subscribe() {
 
       <main className="mx-auto max-w-2xl px-4 py-16">
         <div className="text-center mb-8">
-          <Link href="/" className="text-amber-600 hover:text-emerald-700 text-sm">
+          <Link href="/" className="text-amber-600 hover:text-amber-700 text-sm">
             ← Back to home
           </Link>
         </div>
@@ -54,7 +54,7 @@ export default function Subscribe() {
             <div className="text-5xl mb-4">📬</div>
             <h1 className="text-3xl font-bold mb-3">Get the Weekly Top 10</h1>
             <p className="text-gray-600 text-lg">
-              Every Monday, receive the top 10 cleaning business listings directly in your inbox.
+              Every Monday, receive the top 10 vending machine business listings directly in your inbox.
             </p>
           </div>
 
@@ -78,7 +78,7 @@ export default function Subscribe() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-amber-600 text-white py-3 rounded-lg font-semibold hover:bg-amber-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === "loading" ? "Subscribing..." : "Subscribe"}
             </button>
@@ -87,7 +87,7 @@ export default function Subscribe() {
               <div
                 className={`p-4 rounded-lg text-sm ${
                   status === "success"
-                    ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                    ? "bg-blue-50 text-blue-800 border border-blue-200"
                     : "bg-red-50 text-red-800 border border-red-200"
                 }`}
               >
@@ -125,3 +125,4 @@ export default function Subscribe() {
     </>
   );
 }
+
