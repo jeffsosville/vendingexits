@@ -4,12 +4,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import { createClient } from '@supabase/supabase-js';
-import ValuationAnalysis from '../../components/ValuationAnalysis';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
-);
 
 type Listing = {
   id: string;
@@ -50,37 +44,20 @@ const money = (n?: number | null) =>
 const sanitizeDeepDiveHtml = (html: string | null): string | null => {
   if (!html) return null;
   
-  // Remove "Ready to Move on This Deal?" section with buttons
   let sanitized = html.replace(
     /<h[23][^>]*>Ready to Move on This Deal\?<\/h[23]>[\s\S]*?(?=<h[23]|<div class="bg-white|$)/i,
     ''
   );
   
-  // Remove "About This Business" section (we show it separately)
   sanitized = sanitized.replace(
     /<h[23][^>]*>About This Business<\/h[23]>[\s\S]*?(?=<h[23]|<div class="bg-white|$)/i,
     ''
   );
   
-  // Remove any "View Full Listing" or "Need SBA Financing" buttons
-  sanitized = sanitized.replace(
-    /<a[^>]*>View Full Listing[^<]*<\/a>/gi,
-    ''
-  );
-  sanitized = sanitized.replace(
-    /<button[^>]*>View Full Listing[^<]*<\/button>/gi,
-    ''
-  );
-  sanitized = sanitized.replace(
-    /<a[^>]*>Need SBA Financing\?<\/a>/gi,
-    ''
-  );
-  
-  // Remove "View on Broker Site" links
-  sanitized = sanitized.replace(
-    /<a[^>]*>View on Broker Site<\/a>/gi,
-    ''
-  );
+  sanitized = sanitized.replace(/<a[^>]*>View Full Listing[^<]*<\/a>/gi, '');
+  sanitized = sanitized.replace(/<button[^>]*>View Full Listing[^<]*<\/button>/gi, '');
+  sanitized = sanitized.replace(/<a[^>]*>Need SBA Financing\?<\/a>/gi, '');
+  sanitized = sanitized.replace(/<a[^>]*>View on Broker Site<\/a>/gi, '');
   
   return sanitized.trim();
 };
@@ -88,54 +65,54 @@ const sanitizeDeepDiveHtml = (html: string | null): string | null => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params as { id: string };
 
-  console.log('Query ID:', id);
-  console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
-  console.log('Has anon key:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-  
-  const { count } = await supabase
-    .from('cleaning_listings_merge')
-    .select('*', { count: 'exact', head: true });
-  
-  console.log('Total rows in table:', count);
+  // Initialize Supabase in getServerSideProps, not at module level
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
+  if (!supabaseUrl || !supabaseKey) {
+    return { notFound: true };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  // Query the correct listings table with vending filter
   const { data, error } = await supabase
-    .from('cleaning_listings_merge')
+    .from('listings')
     .select('*')
-    .eq('id', id)
+    .eq('listing_id', id)
+    .eq('industry', 'vending')
+    .eq('is_active', true)
     .single();
 
-  console.log('Error:', error);
-  console.log('Data:', data);
-
   if (error || !data) {
-    console.log('Returning 404');
+    console.log('Listing not found:', error);
     return { notFound: true };
   }
 
   const listing = {
-    id: data.id,
-    listing_id: data.id,
-    title: data.header,
+    id: data.listing_id,
+    listing_id: data.listing_id,
+    title: data.title,
     price: data.price,
-    price_text: null,
+    price_text: data.price_text,
     location: data.location,
     city: data.city,
     state: data.state,
-    description: data.notes,
-    business_type: null,
-    category: null,
+    description: data.description,
+    business_type: data.business_type,
+    category: data.category,
     revenue: data.revenue,
     cash_flow: data.cash_flow,
-    established_year: null,
-    employees: null,
-    listing_url: data.direct_broker_url || data.url || '#',
+    established_year: data.established_year,
+    employees: data.employees,
+    listing_url: data.listing_url || '#',
     image_url: data.image_url,
     broker_account: data.broker_account,
-    why_hot: null,
-    curator_note: null,
+    why_hot: data.why_hot,
+    curator_note: data.curator_note,
     verified_date: data.scraped_at,
-    quality_score: null,
-    featured_rank: null,
+    quality_score: data.quality_score,
+    featured_rank: data.featured_rank,
     scraped_at: data.scraped_at,
     deep_dive_html: data.deep_dive_html,
   };
@@ -154,16 +131,14 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // Show phone field for high-value listings
-  const isHighValue = listing.price && listing.price >= 1000000;
+  const isHighValue = listing.price && listing.price >= 500000;
 
-  // Generate Schema.org structured data for SEO
   const generateListingSchema = () => {
     return {
       "@context": "https://schema.org",
       "@type": "Product",
-      "name": listing.title || "Commercial Cleaning Business",
-      "description": listing.description?.substring(0, 500) || "Established commercial cleaning business for sale",
+      "name": listing.title || "Vending Machine Business",
+      "description": listing.description?.substring(0, 500) || "Established vending machine business for sale",
       "image": listing.image_url,
       "offers": {
         "@type": "Offer",
@@ -223,7 +198,8 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
           source: 'listing_detail',
           listing_price: listing.price,
           listing_title: listing.title,
-          listing_location: `${listing.city}, ${listing.state}`
+          listing_location: listing.city && listing.state ? `${listing.city}, ${listing.state}` : listing.location,
+          listing_url: listing.listing_url
         }),
       });
 
@@ -241,13 +217,11 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
   return (
     <>
       <Head>
-        <title>{listing.title || 'Business Listing'} | Vending Exits</title>
-        <meta name="description" content={listing.description?.substring(0, 160) || 'Commercial cleaning business for sale'} />
+        <title>{listing.title || 'Vending Business'} | Vending Exits</title>
+        <meta name="description" content={listing.description?.substring(0, 160) || 'Vending machine business for sale'} />
         
-        {/* Canonical URL */}
-        <link rel="canonical" href={`https://VendingExits.com/listing/${listing.id}`} />
+        <link rel="canonical" href={`https://vendingexits.com/listing/${listing.id}`} />
         
-        {/* Schema.org Structured Data */}
         <script 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ 
@@ -255,25 +229,23 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
           }}
         />
         
-        {/* Open Graph Tags */}
-        <meta property="og:title" content={listing.title || 'Business Listing'} />
+        <meta property="og:title" content={listing.title || 'Vending Business'} />
         <meta property="og:description" content={listing.description?.substring(0, 160)} />
-        <meta property="og:image" content={listing.image_url || 'https://VendingExits.com/og-default.jpg'} />
+        <meta property="og:image" content={listing.image_url || 'https://vendingexits.com/og-default.jpg'} />
         <meta property="og:type" content="product" />
-        <meta property="og:url" content={`https://VendingExits.com/listing/${listing.id}`} />
+        <meta property="og:url" content={`https://vendingexits.com/listing/${listing.id}`} />
         
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={listing.title || 'Business Listing'} />
+        <meta name="twitter:title" content={listing.title || 'Vending Business'} />
         <meta name="twitter:description" content={listing.description?.substring(0, 160)} />
-        <meta name="twitter:image" content={listing.image_url || 'https://VendingExits.com/og-default.jpg'} />
+        <meta name="twitter:image" content={listing.image_url || 'https://vendingexits.com/og-default.jpg'} />
       </Head>
 
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-white border-b">
           <div className="max-w-6xl mx-auto px-4 py-4">
-            <Link href="/" className="text-amber-600 hover:text-emerald-700 font-semibold">
+            <Link href="/" className="text-blue-600 hover:text-blue-700 font-semibold">
               ← Back to Vending Exits
             </Link>
           </div>
@@ -286,16 +258,14 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
             {/* Left Column - Main Info */}
             <div className="lg:col-span-2 space-y-6">
               
-              {/* Featured Badge */}
               {listing.featured_rank && (
-                <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm font-semibold">
+                <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-semibold">
                   ⭐ Top 10 This Week #{listing.featured_rank}
                 </div>
               )}
 
-              {/* Title */}
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-                {listing.title || 'Business Opportunity'}
+                {listing.title || 'Vending Machine Business'}
               </h1>
 
               {/* Quick Stats */}
@@ -337,23 +307,23 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
               {/* Competitive Advantages */}
               <div className="bg-white p-6 rounded-lg border">
                 <h3 className="font-bold text-gray-900 mb-4 text-xl">Competitive Advantages</h3>
-                <p className="text-gray-600 mb-4">What makes this business defensible:</p>
+                <p className="text-gray-600 mb-4">What makes this vending business defensible:</p>
                 <div className="space-y-3">
                   <div>
-                    <span className="font-semibold text-gray-900">Established operations</span>
-                    <span className="text-gray-600"> - Not a startup, proven revenue model</span>
+                    <span className="font-semibold text-gray-900">Established routes</span>
+                    <span className="text-gray-600"> - Not a startup, proven revenue model with active locations</span>
                   </div>
                   <div>
                     <span className="font-semibold text-gray-900">Recurring revenue</span>
-                    <span className="text-gray-600"> - Cleaning contracts provide predictable cash flow</span>
+                    <span className="text-gray-600"> - Location contracts provide predictable cash flow</span>
                   </div>
                   <div>
                     <span className="font-semibold text-gray-900">Barrier to entry</span>
-                    <span className="text-gray-600"> - Building a client base takes years</span>
+                    <span className="text-gray-600"> - Building location relationships takes years</span>
                   </div>
                   <div>
-                    <span className="font-semibold text-gray-900">Asset-light model</span>
-                    <span className="text-gray-600"> - Low overhead, high cash conversion</span>
+                    <span className="font-semibold text-gray-900">Asset-backed business</span>
+                    <span className="text-gray-600"> - Machines have resale value, low overhead model</span>
                   </div>
                 </div>
               </div>
@@ -367,9 +337,9 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                 />
               )}
 
-              {/* Gated Content - Show gate or unlocked content */}
+              {/* Gated Content */}
               {!showFullDetails ? (
-                <div className="bg-gradient-to-br from-emerald-50 to-blue-50 border-2 border-emerald-200 rounded-lg p-8 text-center">
+                <div className="bg-gradient-to-br from-blue-50 to-amber-50 border-2 border-blue-200 rounded-lg p-8 text-center">
                   <div className="max-w-md mx-auto">
                     <h3 className="text-2xl font-bold text-gray-900 mb-3">
                       Get Complete Financial Details
@@ -401,7 +371,6 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {/* Additional Business Details - After unlock */}
                   {(listing.established_year || listing.employees || listing.business_type || listing.category) && (
                     <div className="bg-white p-6 rounded-lg border">
                       <h3 className="font-bold text-gray-900 mb-4 text-lg">Additional Details</h3>
@@ -437,10 +406,9 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                     </div>
                   )}
 
-                  {/* Broker Contact - After unlock */}
-                  <div className="bg-emerald-50 border-2 border-emerald-200 rounded-lg p-6">
-                    <h3 className="font-bold text-emerald-900 mb-2 text-lg">✓ Contact Information Sent</h3>
-                    <p className="text-emerald-800 mb-4">
+                  <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+                    <h3 className="font-bold text-blue-900 mb-2 text-lg">✓ Contact Information Sent</h3>
+                    <p className="text-blue-800 mb-4">
                       Check your email for complete broker details, owner contact info, and your personalized investment analysis.
                     </p>
                     <div className="bg-white rounded-lg p-4 mb-4">
@@ -449,12 +417,11 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                         <div className="font-semibold text-gray-900">{listing.broker_account}</div>
                       )}
                     </div>
-                    <p className="text-sm text-emerald-800">
+                    <p className="text-sm text-blue-800">
                       <strong>Next steps:</strong> We represent YOUR interests as co-broker at no cost to you. Our team will follow up within 24 hours to discuss this opportunity.
                     </p>
                   </div>
 
-                  {/* Disclaimer */}
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                     <p className="text-xs text-gray-600 italic">
                       Disclaimer: This analysis is for informational purposes only and does not constitute investment advice. All numbers are based on publicly available listing information and should be verified during due diligence. Always consult with legal, financial, and tax professionals before making any business acquisition decision.
@@ -472,7 +439,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
 
             {/* Right Column - CTA Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg border-2 border-emerald-200 p-6 sticky top-6">
+              <div className="bg-white rounded-lg border-2 border-amber-200 p-6 sticky top-6">
                 {!showFullDetails ? (
                   <div>
                     <h3 className="font-bold text-gray-900 mb-2 text-xl">Get Full Details + Financial Analysis</h3>
@@ -510,29 +477,21 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                     <button
                       onClick={handleEmailCapture}
                       disabled={submitting || !email}
-                      className="w-full bg-amber-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed mb-3 text-lg"
+                      className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-4 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed mb-3 text-lg"
                     >
                       {submitting ? 'Processing...' : 'Get Full Details →'}
                     </button>
 
-                    <div className="border-t border-gray-200 pt-3 mb-3">
-                      <a
-                        href="#"
-                        className="block w-full text-center bg-white hover:bg-gray-50 text-emerald-700 font-semibold py-3 px-6 rounded-lg border-2 border-amber-600 transition"
-                      >
-                        Schedule 15-Min Call
-                      </a>
-                    </div>
-
-                    {/* SBA Financing Teaser */}
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3">
                       <h5 className="font-semibold text-blue-900 mb-2 text-sm">Need SBA Financing?</h5>
                       <p className="text-xs text-blue-800 mb-2">
                         90% financing available with 10% down. We connect you with specialized lenders.
                       </p>
-                      <div className="text-xs text-blue-700">
-                        • Est. monthly payment: ~{listing.price && listing.cash_flow ? `$${Math.round((listing.price * 0.9 * (0.08/12) * Math.pow(1 + 0.08/12, 120)) / (Math.pow(1 + 0.08/12, 120) - 1)).toLocaleString()}` : 'TBD'}
-                      </div>
+                      {listing.price && listing.cash_flow && (
+                        <div className="text-xs text-blue-700">
+                          • Est. monthly payment: ~${Math.round((listing.price * 0.9 * (0.08/12) * Math.pow(1 + 0.08/12, 120)) / (Math.pow(1 + 0.08/12, 120) - 1)).toLocaleString()}
+                        </div>
+                      )}
                     </div>
                     
                     <p className="text-xs text-gray-500 text-center">
@@ -541,24 +500,17 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                   </div>
                 ) : (
                   <div>
-                    <div className="bg-emerald-50 p-4 rounded-lg mb-4">
-                      <h4 className="font-semibold text-emerald-900 mb-2">✓ Details Sent!</h4>
-                      <p className="text-sm text-emerald-800">
+                    <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                      <h4 className="font-semibold text-blue-900 mb-2">✓ Details Sent!</h4>
+                      <p className="text-sm text-blue-800">
                         Check your email for complete financial information and next steps.
                       </p>
                     </div>
-                    
-                    <a
-                      href="#"
-                      className="block w-full text-center bg-amber-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition mb-3"
-                    >
-                      Schedule Strategy Call
-                    </a>
 
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <h5 className="font-semibold text-blue-900 mb-2 text-sm">Need SBA Financing?</h5>
                       <p className="text-xs text-blue-800 mb-3">
-                        We partner with lenders who specialize in cleaning business acquisitions.
+                        We partner with lenders who specialize in vending business acquisitions.
                       </p>
                       <a
                         href="#"
@@ -575,7 +527,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                   <ul className="text-sm text-gray-600 space-y-2">
                     <li className="flex items-start gap-2">
                       <span className="text-amber-600">✓</span>
-                      <span>Verified cleaning businesses only</span>
+                      <span>Verified vending routes only</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-amber-600">✓</span>
@@ -587,7 +539,7 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-amber-600">✓</span>
-                      <span>Automated valuation analysis</span>
+                      <span>From the ATM Brokerage team</span>
                     </li>
                   </ul>
                 </div>
@@ -599,3 +551,4 @@ export default function ListingDetail({ listing }: { listing: Listing }) {
     </>
   );
 }
+
