@@ -55,11 +55,12 @@ export async function POST(request: NextRequest) {
         ignoreDuplicates: false
       });
 
-    // STEP 2: Get full listing details
+    // STEP 2: Get full listing details from vending listings
     const { data: listing, error: listingError } = await supabase
-      .from('cleaning_listings_merge')
+      .from('listings')
       .select('*')
-      .eq('id', listing_id)
+      .eq('listing_id', listing_id)
+      .eq('industry', 'vending')
       .single();
 
     if (listingError) {
@@ -86,8 +87,8 @@ export async function POST(request: NextRequest) {
       email,
       phone: phone || null,
       listing_id,
-      listing_title: listing_title || listing?.header,
-      listing_url: listing_url || listing?.direct_broker_url || listing?.url,
+      listing_title: listing_title || listing?.title,
+      listing_url: listing_url || listing?.listing_url,
       listing_price: price,
       listing_location: listing_location || (listing?.city && listing?.state ? `${listing.city}, ${listing.state}` : null),
       broker_name: listing?.broker_account,
@@ -154,7 +155,7 @@ export async function POST(request: NextRequest) {
     
     <div class="content">
       <div class="section">
-        <h2>${leadData.listing_title || 'Cleaning Business Opportunity'}</h2>
+        <h2>${leadData.listing_title || 'Vending Machine Business Opportunity'}</h2>
         <p><strong>Location:</strong> ${leadData.listing_location || 'See listing for details'}</p>
       </div>
 
@@ -213,11 +214,11 @@ export async function POST(request: NextRequest) {
       <div class="questions">
         <h3>🎯 Critical Questions to Ask Before Contacting Broker</h3>
         <ol>
-          <li>What % of revenue comes from your top 5 clients?</li>
-          <li>Are cleaning contracts month-to-month or annual?</li>
-          <li>What's your employee turnover rate?</li>
-          <li>How many hours per week does the owner work?</li>
-          <li>What's preventing you from 2x growth?</li>
+          <li>What's the revenue per machine per month?</li>
+          <li>What are the location commission rates?</li>
+          <li>How long are the location contracts?</li>
+          <li>What's the age and condition of the machines?</li>
+          <li>What's the service frequency and route efficiency?</li>
         </ol>
       </div>
 
@@ -246,7 +247,7 @@ export async function POST(request: NextRequest) {
         
         <p style="margin-top: 25px; font-size: 12px; color: #9ca3af;">
           You're receiving this because you requested details from VendingExits.com.<br>
-          You'll also receive our weekly Top 10 cleaning business listings every Monday.
+          You'll also receive our weekly Top 10 vending machine business listings every Monday.
         </p>
       </div>
     </div>
@@ -264,7 +265,7 @@ export async function POST(request: NextRequest) {
           body: JSON.stringify({
             from: 'Jeff at Vending Exits <jeff@VendingExits.com>',
             to: email,
-            subject: `Your Details: ${leadData.listing_title || 'Cleaning Business'} - ${leadData.listing_location || ''}`,
+            subject: `Your Details: ${leadData.listing_title || 'Vending Business'} - ${leadData.listing_location || ''}`,
             html: emailHtml
           })
         });
@@ -310,3 +311,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
