@@ -53,15 +53,19 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  // Get total count
+  // Get total count for vending industry
   const { count } = await supabase
-    .from("cleaning_listings_merge")
-    .select("id", { count: "exact", head: true });
+    .from("listings")
+    .select("*", { count: "exact", head: true })
+    .eq('industry', 'vending')
+    .eq('is_active', true);
 
-  // Get all listings
+  // Get all vending listings
   const { data, error } = await supabase
-    .from("cleaning_listings_merge")
-    .select("id, header, city, state, location, price, cash_flow, revenue, notes, url, direct_broker_url, broker_account, scraped_at")
+    .from("listings")
+    .select("listing_id, title, city, state, location, price, cash_flow, revenue, description, listing_url, broker_account, scraped_at")
+    .eq('industry', 'vending')
+    .eq('is_active', true)
     .order("scraped_at", { ascending: false })
     .limit(1000);
 
@@ -77,16 +81,16 @@ export const getServerSideProps: GetServerSideProps = async () => {
   }
 
   const listings = data.map((r) => ({
-    listing_id: r.id ?? null,
-    title: r.header ?? null,
+    listing_id: r.listing_id ?? null,
+    title: r.title ?? null,
     city: r.city ?? null,
     state: r.state ?? null,
     location: r.location ?? null,
     price: r.price ?? null,
     cash_flow: r.cash_flow ?? null,
     revenue: r.revenue ?? null,
-    description: r.notes ?? null,
-    listing_url: r.direct_broker_url ?? r.url ?? null,
+    description: r.description ?? null,
+    listing_url: r.listing_url ?? null,
     broker_account: r.broker_account ?? null,
     scraped_at: r.scraped_at ?? null,
   }));
@@ -238,4 +242,5 @@ export default function VendingIndex({ listings, totalCount, hadError, errMsg }:
     </>
   );
 }
+
 
