@@ -43,7 +43,7 @@ export async function getServerSideProps() {
     .from("vending_listings_merge")
     .select("*")
     .eq('is_active', true)
-    .order('price', { ascending: false })
+    .order('price', { ascending: false, nullsFirst: false })
     .limit(10);
 
   // Get total count

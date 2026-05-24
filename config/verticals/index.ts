@@ -6,6 +6,7 @@
 
 // Export individual vertical configs
 export { cleaningVertical } from './cleaning.vertical';
+export { vendingVertical } from './vending.vertical';
 export { landscapeVertical } from './landscape.vertical';
 export { hvacVertical } from './hvac.vertical';
 
