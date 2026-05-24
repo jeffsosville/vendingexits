@@ -7,7 +7,7 @@ export const cleaningVertical: VerticalConfig = {
   info: {
     name: 'Cleaning Services',
     slug: 'cleaning',
-    domain: 'VendingExits.com',
+    domain: 'cleaningexits.com',
     brandColor: '#3B82F6', // Blue
     logoPath: '/logos/cleaning-logo.svg',
     faviconPath: '/favicons/cleaning-favicon.ico',

@@ -6,18 +6,21 @@ import { hvacVertical } from './hvac.vertical';
 /**
  * Global registry of all vertical configurations
  */
+import { vendingVertical } from './vending.vertical';
+
 export const verticalRegistry: VerticalRegistry = {
   verticals: {
     cleaning: cleaningVertical,
+    vending: vendingVertical,
     landscape: landscapeVertical,
     hvac: hvacVertical,
   },
 
   hostnameMappings: [
     // Cleaning vertical
-    { hostname: 'VendingExits.com', verticalSlug: 'cleaning', isPrimary: true },
-    { hostname: 'www.VendingExits.com', verticalSlug: 'cleaning', isPrimary: false },
-    { hostname: 'localhost', verticalSlug: 'cleaning', isPrimary: false }, // Development
+    { hostname: 'vendingexits.com', verticalSlug: 'vending', isPrimary: true },
+    { hostname: 'www.vendingexits.com', verticalSlug: 'vending', isPrimary: false },
+    { hostname: 'localhost', verticalSlug: 'vending', isPrimary: false }, // Development
 
     // Landscape vertical
     { hostname: 'landscapeexits.com', verticalSlug: 'landscape', isPrimary: true },
@@ -28,5 +31,5 @@ export const verticalRegistry: VerticalRegistry = {
     { hostname: 'www.hvacexits.com', verticalSlug: 'hvac', isPrimary: false },
   ],
 
-  defaultVertical: 'cleaning',
+  defaultVertical: 'vending',
 };

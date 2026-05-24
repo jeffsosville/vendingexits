@@ -4,3 +4,7 @@ node_modules
 .DS_Store
 outsupabase/
 .vercel
+
+.env.vercel
+*.bak
+*.local
