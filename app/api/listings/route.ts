@@ -50,7 +50,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: JSON.stringify(error) }, { status: 500 });
     }
 
-    const listings = (data || []).map((r: any) => ({ ...r, id: r.listing_id }));
+    const listings = (data || []).map((r: any) => ({
+      ...r,
+      id: r.listing_id,
+      header: r.title,            // ListingCard reads `header`
+      cashFlow: r.cash_flow,      // card reads camelCase `cashFlow`
+      recentlyAdded: false,
+    }));
 
     const totalPages = Math.ceil((count || 0) / limit);
     return NextResponse.json({
