@@ -40,18 +40,16 @@ const money = (n?: number | null) =>
 export async function getServerSideProps() {
   // Get top 10 vending businesses by price
   const { data, error } = await supabase
-    .from("listings")
+    .from("vending_listings_merge")
     .select("*")
-    .eq('industry', 'vending')
     .eq('is_active', true)
     .order('price', { ascending: false })
     .limit(10);
 
   // Get total count
   const { count: totalCount } = await supabase
-    .from("listings")
+    .from("vending_listings_merge")
     .select("*", { count: 'exact', head: true })
-    .eq('industry', 'vending')
     .eq('is_active', true);
 
   // Get count added this week (last 7 days)
@@ -59,9 +57,8 @@ export async function getServerSideProps() {
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   
   const { count: weekCount } = await supabase
-    .from("listings")
+    .from("vending_listings_merge")
     .select("*", { count: 'exact', head: true })
-    .eq('industry', 'vending')
     .eq('is_active', true)
     .gte('scraped_at', oneWeekAgo.toISOString());
 
@@ -70,9 +67,8 @@ export async function getServerSideProps() {
   today.setHours(0, 0, 0, 0);
   
   const { count: todayCount } = await supabase
-    .from("listings")
+    .from("vending_listings_merge")
     .select("*", { count: 'exact', head: true })
-    .eq('industry', 'vending')
     .eq('is_active', true)
     .gte('last_verified_at', today.toISOString());
 

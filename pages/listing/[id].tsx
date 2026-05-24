@@ -93,13 +93,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   console.log('Has anon key:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
   
   const { count } = await supabase
-    .from('cleaning_listings_merge')
+    .from('vending_listings_merge')
     .select('*', { count: 'exact', head: true });
   
   console.log('Total rows in table:', count);
 
   const { data, error } = await supabase
-    .from('cleaning_listings_merge')
+    .from('vending_listings_merge')
     .select('*')
     .eq('id', id)
     .single();
