@@ -174,7 +174,7 @@ export default function Home({
         {/* Action Button */}
         <div className="mb-12 flex justify-center">
           <Link
-            href="/vending-index"
+            href="/listings"
             className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-6 py-3 text-white font-semibold shadow-md hover:bg-amber-700 transition"
           >
             Explore Full Index
@@ -285,7 +285,7 @@ export default function Home({
               Browse all {stats.total} verified vending business listings. See which are real and where to find them.
             </p>
             <Link
-              href="/vending-index"
+              href="/listings"
               className="inline-flex items-center gap-1 text-amber-600 hover:text-amber-700 font-semibold"
             >
               View full index →
