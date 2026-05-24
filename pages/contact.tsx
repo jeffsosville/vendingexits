@@ -9,7 +9,7 @@ export default function Contact() {
     <>
       <Head>
         <title>Contact Us | Vending Exits</title>
-        <meta name="description" content="Get in touch with Vending Exits about buying or selling a cleaning business." />
+        <meta name="description" content="Get in touch with Vending Exits about buying or selling a vending business." />
       </Head>
 
       <Header />
@@ -19,7 +19,7 @@ export default function Contact() {
         
         <div className="bg-white rounded-xl border p-8 mb-8">
           <p className="text-lg text-gray-700 mb-6">
-            Have questions about a listing? Want to sell your cleaning business? Just want to chat? 
+            Have questions about a listing? Want to sell your vending business? Just want to chat? 
             We're here to help.
           </p>
 
@@ -45,10 +45,10 @@ export default function Contact() {
             <div>
               <h2 className="text-xl font-semibold mb-2">For Sellers</h2>
               <p className="text-gray-600">
-                Want to list your cleaning business? Email us at{' '}
+                Want to list your vending business? Email us at{' '}
                 <a href="mailto:hello@VendingExits.com" className="text-amber-600 hover:underline">
                   hello@VendingExits.com
-                </a>
+                </a>ƒ
                 {' '}and we'll get back to you within 24 hours.
               </p>
             </div>

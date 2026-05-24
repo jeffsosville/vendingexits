@@ -5,7 +5,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { label: 'Browse', href: '/cleaning-index' },
+    { label: 'Browse', href: '/vending-index' },
     { label: 'Resources', href: '/resources' },
     { label: 'Sell', href: '/sell' },
     { label: 'About', href: '/about' },
