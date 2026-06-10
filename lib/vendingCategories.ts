@@ -5,42 +5,34 @@
 // and the CategoryTabs UI component.
 //
 // MATCHING MODEL: each listing is assigned to exactly ONE category — the
-// first match in the order below (priority order). This keeps header counts
-// honest and avoids double-counting, matching how CleaningExits buckets work.
+// first match in the order below (priority order). Keeps header counts honest.
 //
-// MIGRATION NOTE: today these match against the freeform title/description/
-// business_type/category text at query time (Option A). When you backfill a
-// real `category_id` column on vending_listings_merge, swap the keyword
-// `.or()` clause for `.eq('category_id', id)` and the counts query for a
-// grouped count — the UI does not change.
+// POSTGREST SAFETY: the .or() filter values are built WITHOUT double quotes
+// and WITHOUT reserved characters (& ( ) , "). Patterns use only letters,
+// spaces, and the % wildcard, which PostgREST accepts unquoted. Short
+// ambiguous tokens (ice, air, vac) are space-anchored (e.g. "% ice%") so they
+// don't substring-match "service"/"repair"/"vacation".
+//
+// MIGRATION NOTE: when you backfill a real `category_id` column, swap the
+// keyword .or() for .eq('category_id', id). The UI does not change.
 
 export interface VendingKeyword {
-  /** The term to search for (lowercased). */
+  /** Lowercased term. Letters/spaces only — NO &, hyphens, commas, quotes. */
   term: string;
-  /**
-   * If true, match the term as a whole word (space-padded) to avoid
-   * substring false positives like "ice" in "service" or "air" in "repair".
-   * Use for short/ambiguous terms. Long distinctive terms can leave this off.
-   */
-  wholeWord?: boolean;
+  /** Space-anchor short ambiguous terms to force whole-word-ish matching. */
+  anchor?: boolean;
 }
 
 export interface VendingCategory {
-  /** Stable id — also the value passed as ?category= and the future column value */
   id: string;
-  /** Tab label shown to users */
   name: string;
-  /** Emoji shown in the tab pill */
   emoji: string;
-  /** Keywords; a listing matches the category if any keyword matches its text */
   keywords: VendingKeyword[];
 }
 
-// Helper to keep the category table readable.
-const kw = (term: string, wholeWord = false): VendingKeyword => ({ term, wholeWord });
+const kw = (term: string, anchor = false): VendingKeyword => ({ term, anchor });
 
-// Order = priority. Most specific / least ambiguous buckets should come
-// BEFORE broad ones so a listing lands in the most meaningful tab.
+// Order = priority (most specific first).
 export const VENDING_CATEGORIES: VendingCategory[] = [
   {
     id: 'water-ice',
@@ -48,7 +40,7 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
     emoji: '💧',
     keywords: [
       kw('ice vending'), kw('ice machine'), kw('ice house'), kw('filtered water'),
-      kw('bagged ice'), kw('bulk ice'), kw('water vending'), kw('water store'),
+      kw('bagged ice'), kw('water vending'), kw('water store'),
       kw('ice', true), kw('water', true),
     ],
   },
@@ -57,8 +49,7 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
     name: 'Air & Vac',
     emoji: '🌬️',
     keywords: [
-      kw('air and vac'), kw('air vac'), kw('tire inflation'), kw('air machine'),
-      kw('car wash air'), kw('coin-op vacuum'), kw('vacuum'),
+      kw('air vac'), kw('tire inflation'), kw('air machine'), kw('vacuum'),
       kw('vac', true),
     ],
   },
@@ -68,8 +59,7 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
     emoji: '🥗',
     keywords: [
       kw('healthy'), kw('fresh food'), kw('salad'), kw('micro market'),
-      kw('micromarket'), kw('micro-market'), kw('kombucha'), kw('protein'),
-      kw('wellness'), kw('fresh-food'),
+      kw('micromarket'), kw('kombucha'), kw('protein'), kw('wellness'),
     ],
   },
   {
@@ -98,8 +88,7 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
     keywords: [
       kw('industrial'), kw('locker'), kw('parcel'), kw('automated'),
       kw('tool crib'), kw('warehouse'), kw('amusement'), kw('arcade'),
-      kw('coin-op'), kw('coin operated'), kw('ppe', true), kw('mro', true),
-      kw('b2b', true),
+      kw('coin operated'), kw('ppe', true), kw('mro', true), kw('b2b', true),
     ],
   },
   {
@@ -109,7 +98,7 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
     keywords: [
       kw('snack'), kw('beverage'), kw('soda'), kw('drink'), kw('combo'),
       kw('coffee'), kw('food vending'), kw('candy'), kw('chips'),
-      kw('full-line'), kw('full line'),
+      kw('full line'),
     ],
   },
 ];
@@ -117,30 +106,32 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
 export const VENDING_CATEGORY_IDS = VENDING_CATEGORIES.map((c) => c.id);
 
 /**
- * Turn one keyword into an ilike pattern, sanitized + quoted for PostgREST.
- *
- * PostgREST `.or()` grammar notes:
- *   - clauses are comma-separated; a comma in a value breaks parsing
- *   - `&`, `(`, `)`, `"` are reserved in the logic-tree parser
- *   - values with spaces or reserved chars MUST be double-quoted
- * So we strip reserved chars and always emit a quoted pattern.
- * wholeWord terms are space-padded so "ice" doesn't match "service".
+ * Sanitize a term to letters/spaces only, collapse whitespace.
+ * Strips anything that could break PostgREST's or() grammar.
  */
-function ilikePattern(term: string, wholeWord: boolean): string {
-  const safe = term
-    .replace(/[%,&()"]/g, ' ')
+function sanitize(term: string): string {
+  return term
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/** Build the ilike VALUE (no column, no quotes) for one keyword. */
+function ilikeValue(k: VendingKeyword): string {
+  const safe = sanitize(k.term);
   if (!safe) return '';
-  return wholeWord ? `% ${safe} %` : `%${safe}%`;
+  // anchor: space on BOTH sides → whole-word match without quotes.
+  // e.g. "% vac %" matches " vac " but not " vacation" or "service".
+  // Trade-off: won't match a term at the very start/end of a field, but
+  // vending listing text effectively always has surrounding words.
+  return k.anchor ? `% ${safe} %` : `%${safe}%`;
 }
 
 /**
- * Build the Supabase `.or()` filter string for a single category's keywords,
- * matched across the searchable text columns. Used server-side.
- *
- * Produces e.g.:
- *   title.ilike."%snack%",description.ilike."%snack%",...
+ * Build the Supabase `.or()` filter string for a category.
+ * Output contains NO quotes and NO reserved chars — only
+ * `col.ilike.%value%` clauses joined by commas. PostgREST-safe.
  */
 export function categoryOrFilter(categoryId: string): string | null {
   const cat = VENDING_CATEGORIES.find((c) => c.id === categoryId);
@@ -148,19 +139,18 @@ export function categoryOrFilter(categoryId: string): string | null {
   const cols = ['title', 'description', 'business_type', 'category'];
   const clauses: string[] = [];
   for (const k of cat.keywords) {
-    const pat = ilikePattern(k.term, !!k.wholeWord);
-    if (!pat) continue;
+    const val = ilikeValue(k);
+    if (!val) continue;
     for (const col of cols) {
-      clauses.push(`${col}.ilike."${pat}"`);
+      clauses.push(`${col}.ilike.${val}`);
     }
   }
   return clauses.length ? clauses.join(',') : null;
 }
 
 /**
- * Client-side equivalent: assign a listing to its first-matching category id,
- * or null if none match. Used for the future backfill and any client tagging.
- * Mirrors the server's wholeWord vs substring logic.
+ * Client-side classifier mirroring the server logic. Used for the future
+ * category_id backfill and any client tagging.
  */
 export function classifyListing(listing: {
   title?: string | null;
@@ -168,23 +158,18 @@ export function classifyListing(listing: {
   business_type?: string | null;
   category?: string | null;
 }): string | null {
-  const hay = [
-    listing.title,
-    listing.description,
-    listing.business_type,
-    listing.category,
-  ]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase();
-
+  const hay = sanitize(
+    [listing.title, listing.description, listing.business_type, listing.category]
+      .filter(Boolean)
+      .join(' ')
+  );
   if (!hay) return null;
   const padded = ` ${hay} `;
 
   for (const cat of VENDING_CATEGORIES) {
     for (const k of cat.keywords) {
-      const term = k.term.toLowerCase();
-      const matched = k.wholeWord
+      const term = sanitize(k.term);
+      const matched = k.anchor
         ? padded.includes(` ${term} `)
         : hay.includes(term);
       if (matched) return cat.id;
