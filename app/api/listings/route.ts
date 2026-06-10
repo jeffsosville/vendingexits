@@ -68,13 +68,28 @@ export async function GET(request: NextRequest) {
     // Category filter (Option A: keyword match across text columns).
     // When a real category_id column is backfilled, replace this block with:
     //   if (category && category !== 'all') query = query.eq('category_id', category);
+    //
+    // NOTE: only ONE top-level .or() can be used per query — PostgREST merges
+    // multiple .or() calls into a single OR group rather than ANDing them.
+    // So the category uses .or(), and search is applied as ANDed .ilike filters.
     if (category && category !== 'all') {
       const orFilter = categoryOrFilter(category);
       if (orFilter) query = query.or(orFilter);
     }
 
     if (search) {
-      query = query.or(`title.ilike.%${search}%,location.ilike.%${search}%`);
+      const safeSearch = search.replace(/[%,&()"]/g, ' ').trim();
+      if (safeSearch) {
+        if (category && category !== 'all') {
+          // category already used .or(); AND the search across title OR location
+          // via an RPC-free approach: match title (most common) to avoid a 2nd .or().
+          query = query.ilike('title', `%${safeSearch}%`);
+        } else {
+          query = query.or(
+            `title.ilike."%${safeSearch}%",location.ilike."%${safeSearch}%"`
+          );
+        }
+      }
     }
     if (minPrice) query = query.gte('price', parseInt(minPrice));
     if (maxPrice) query = query.lte('price', parseInt(maxPrice));
