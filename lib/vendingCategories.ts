@@ -5,22 +5,24 @@
 // and the CategoryTabs UI component.
 //
 // MATCHING MODEL: each listing is assigned to exactly ONE category — the
-// first match in the order below (priority order). Keeps header counts honest.
+// first match in priority order. Keeps header counts honest.
 //
-// POSTGREST SAFETY: the .or() filter values are built WITHOUT double quotes
-// and WITHOUT reserved characters (& ( ) , "). Patterns use only letters,
-// spaces, and the % wildcard, which PostgREST accepts unquoted. Short
-// ambiguous tokens (ice, air, vac) are space-anchored (e.g. "% ice%") so they
-// don't substring-match "service"/"repair"/"vacation".
+// POSTGREST SAFETY (the hard-won part):
+//   - .or() filter VALUES use `*` as the wildcard, never `%`. Raw `%` in an
+//     .or() string is not URL-encoded by the Supabase client and PostgREST
+//     500s on it.
+//   - Values contain NO literal spaces, NO quotes, NO &()" — a literal space
+//     inside an unquoted .or() value also 500s. Multi-word terms join their
+//     words with `*` (e.g. "gum ball" -> "*gum*ball*").
+//   - We therefore avoid ultra-short ambiguous tokens (ice/vac/ppe) as bare
+//     matches; they're covered by distinctive multi-word siblings instead.
 //
 // MIGRATION NOTE: when you backfill a real `category_id` column, swap the
 // keyword .or() for .eq('category_id', id). The UI does not change.
 
 export interface VendingKeyword {
-  /** Lowercased term. Letters/spaces only — NO &, hyphens, commas, quotes. */
+  /** Lowercased term. Letters/digits/spaces only. */
   term: string;
-  /** Space-anchor short ambiguous terms to force whole-word-ish matching. */
-  anchor?: boolean;
 }
 
 export interface VendingCategory {
@@ -30,7 +32,7 @@ export interface VendingCategory {
   keywords: VendingKeyword[];
 }
 
-const kw = (term: string, anchor = false): VendingKeyword => ({ term, anchor });
+const kw = (term: string): VendingKeyword => ({ term });
 
 // Order = priority (most specific first).
 export const VENDING_CATEGORIES: VendingCategory[] = [
@@ -39,9 +41,12 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
     name: 'Water & Ice',
     emoji: '💧',
     keywords: [
-      kw('ice vending'), kw('ice machine'), kw('ice house'), kw('filtered water'),
-      kw('bagged ice'), kw('water vending'), kw('water store'),
-      kw('ice', true), kw('water', true),
+      // "water" is safe as a substring in vending text. For "ice" we avoid
+      // bare/leading forms because "service vending" contains "...ice vending".
+      // The forms below cannot be hit by "service": "service" has no "machine",
+      // "house", "cream", or "bagged/bulk" following the embedded "ice".
+      kw('water'), kw('ice machine'), kw('ice house'),
+      kw('bagged ice'), kw('bulk ice'), kw('ice cream'),
     ],
   },
   {
@@ -49,8 +54,9 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
     name: 'Air & Vac',
     emoji: '🌬️',
     keywords: [
-      kw('air vac'), kw('tire inflation'), kw('air machine'), kw('vacuum'),
-      kw('vac', true),
+      // bare "vac" dropped (matches "vacation"); "vacuum" + multiword cover it.
+      kw('vacuum'), kw('air vac'), kw('air and vac'), kw('tire inflation'),
+      kw('air machine'), kw('coin op vacuum'),
     ],
   },
   {
@@ -67,8 +73,9 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
     name: 'Bulk',
     emoji: '🍬',
     keywords: [
+      // bare "toy" dropped (too ambiguous); "candy machine"/"gumball" cover bulk.
       kw('bulk'), kw('gumball'), kw('gum ball'), kw('capsule'),
-      kw('sticker'), kw('bouncy ball'), kw('candy machine'), kw('toy', true),
+      kw('sticker'), kw('bouncy ball'), kw('candy machine'),
     ],
   },
   {
@@ -86,9 +93,10 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
     name: 'Industrial & Automated',
     emoji: '🏭',
     keywords: [
+      // bare "ppe"/"mro"/"b2b" dropped; distinctive terms cover the segment.
       kw('industrial'), kw('locker'), kw('parcel'), kw('automated'),
       kw('tool crib'), kw('warehouse'), kw('amusement'), kw('arcade'),
-      kw('coin operated'), kw('ppe', true), kw('mro', true), kw('b2b', true),
+      kw('coin operated'),
     ],
   },
   {
@@ -105,10 +113,7 @@ export const VENDING_CATEGORIES: VendingCategory[] = [
 
 export const VENDING_CATEGORY_IDS = VENDING_CATEGORIES.map((c) => c.id);
 
-/**
- * Sanitize a term to letters/spaces only, collapse whitespace.
- * Strips anything that could break PostgREST's or() grammar.
- */
+/** Sanitize to letters/digits/spaces only; collapse whitespace. */
 function sanitize(term: string): string {
   return term
     .toLowerCase()
@@ -117,43 +122,32 @@ function sanitize(term: string): string {
     .trim();
 }
 
-/** Build the ilike VALUE (no column, no quotes) for one keyword.
- *
- * IMPORTANT: uses `*` as the wildcard, NOT `%`. Inside a Supabase `.or()`
- * string the `%` character is not URL-encoded by the client and PostgREST
- * 500s on it. PostgREST accepts `*` as an equivalent wildcard in ilike,
- * which avoids the encoding problem entirely. (Documented Supabase gotcha.)
- *
- * Internal spaces are also converted to `*` so "gum ball" -> "*gum*ball*"
- * matches "gum ball", "gumball", "gum  ball".
- *
- * Anchored short tokens (ice/air/vac) use " token " boundaries — a literal
- * leading/trailing space inside the wildcards — to force whole-word matching
- * so "ice" doesn't hit "service".
+/**
+ * Build the ilike VALUE (no column, no quotes) for one keyword.
+ * Uses `*` wildcards (never `%`) and contains NO literal spaces:
+ * internal spaces become `*`. e.g. "gum ball" -> "*gum*ball*".
  */
-function ilikeValue(k: VendingKeyword): string {
-  const safe = sanitize(k.term);
+function ilikeValue(term: string): string {
+  const safe = sanitize(term);
   if (!safe) return '';
-  if (k.anchor) {
-    // whole-word: "* token *" — space boundaries, * wildcards on the ends
-    return `* ${safe} *`;
-  }
-  // substring: convert internal spaces to * wildcards
   return `*${safe.replace(/ /g, '*')}*`;
 }
 
 /**
  * Build the Supabase `.or()` filter string for a category.
- * Output contains NO quotes and NO reserved chars — only
- * `col.ilike.%value%` clauses joined by commas. PostgREST-safe.
+ * Output: `col.ilike.*value*` clauses joined by commas. No %, no quotes,
+ * no literal spaces, no reserved chars. PostgREST-safe.
  */
 export function categoryOrFilter(categoryId: string): string | null {
   const cat = VENDING_CATEGORIES.find((c) => c.id === categoryId);
   if (!cat) return null;
-  const cols = ['title', 'description', 'business_type', 'category'];
+  // Only filter on columns that exist on vending_listings_merge.
+  // (business_type / category are read by the detail page via select('*')
+  // but do NOT exist as real columns — filtering on them errors 42703.)
+  const cols = ['title', 'description'];
   const clauses: string[] = [];
   for (const k of cat.keywords) {
-    const val = ilikeValue(k);
+    const val = ilikeValue(k.term);
     if (!val) continue;
     for (const col of cols) {
       clauses.push(`${col}.ilike.${val}`);
@@ -163,8 +157,8 @@ export function categoryOrFilter(categoryId: string): string | null {
 }
 
 /**
- * Client-side classifier mirroring the server logic. Used for the future
- * category_id backfill and any client tagging.
+ * Client-side classifier mirroring the server logic (substring match).
+ * Used for the future category_id backfill and any client tagging.
  */
 export function classifyListing(listing: {
   title?: string | null;
@@ -178,15 +172,11 @@ export function classifyListing(listing: {
       .join(' ')
   );
   if (!hay) return null;
-  const padded = ` ${hay} `;
 
   for (const cat of VENDING_CATEGORIES) {
     for (const k of cat.keywords) {
       const term = sanitize(k.term);
-      const matched = k.anchor
-        ? padded.includes(` ${term} `)
-        : hay.includes(term);
-      if (matched) return cat.id;
+      if (term && hay.includes(term)) return cat.id;
     }
   }
   return null;
