@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import {
+  VENDING_CATEGORIES,
+  categoryOrFilter,
+} from '../../../lib/vendingCategories';
 
 const SORT_COLUMNS: Record<string, string> = {
   ingested_at: 'first_seen',
@@ -17,12 +21,39 @@ export async function GET(request: NextRequest) {
     }
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { searchParams } = new URL(request.url);
+
+    // ---- counts mode: return total + per-category counts for the tab badges ----
+    if (searchParams.get('counts') === 'true') {
+      const base = () =>
+        supabase
+          .from('vending_listings_merge')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_active', true);
+
+      const { count: allCount } = await base();
+
+      const categoryCounts: Record<string, number> = {};
+      await Promise.all(
+        VENDING_CATEGORIES.map(async (cat) => {
+          const orFilter = categoryOrFilter(cat.id);
+          let q = base();
+          if (orFilter) q = q.or(orFilter);
+          const { count } = await q;
+          categoryCounts[cat.id] = count || 0;
+        })
+      );
+
+      return NextResponse.json({ all: allCount || 0, categories: categoryCounts });
+    }
+
+    // ---- normal listing mode ----
     const page = Math.max(parseInt(searchParams.get('page') || '1'), 1);
     const limit = Math.max(parseInt(searchParams.get('limit') || '20'), 1);
     const search = searchParams.get('search') || '';
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     const location = searchParams.get('location');
+    const category = searchParams.get('category') || '';
     const sortByRaw = searchParams.get('sortBy') || '';
     const sortOrder = searchParams.get('sortOrder') === 'asc';
 
@@ -33,6 +64,14 @@ export async function GET(request: NextRequest) {
       .from('vending_listings_merge')
       .select('*', { count: 'exact' })
       .eq('is_active', true);
+
+    // Category filter (Option A: keyword match across text columns).
+    // When a real category_id column is backfilled, replace this block with:
+    //   if (category && category !== 'all') query = query.eq('category_id', category);
+    if (category && category !== 'all') {
+      const orFilter = categoryOrFilter(category);
+      if (orFilter) query = query.or(orFilter);
+    }
 
     if (search) {
       query = query.or(`title.ilike.%${search}%,location.ilike.%${search}%`);
