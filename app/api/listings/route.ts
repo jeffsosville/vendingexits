@@ -85,8 +85,9 @@ export async function GET(request: NextRequest) {
           // (a 2nd .or() would merge into one OR, not AND). No quotes needed.
           query = query.ilike('title', `%${safeSearch}%`);
         } else {
+          // Use * wildcards (not %) inside .or() to avoid URL-encoding 500s.
           query = query.or(
-            `title.ilike.%${safeSearch}%,location.ilike.%${safeSearch}%`
+            `title.ilike.*${safeSearch}*,location.ilike.*${safeSearch}*`
           );
         }
       }
