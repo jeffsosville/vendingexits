@@ -78,15 +78,15 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
-      const safeSearch = search.replace(/[%,&()"]/g, ' ').trim();
+      const safeSearch = search.replace(/[^a-zA-Z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
       if (safeSearch) {
         if (category && category !== 'all') {
-          // category already used .or(); AND the search across title OR location
-          // via an RPC-free approach: match title (most common) to avoid a 2nd .or().
+          // category already used .or(); AND the search via a single .ilike
+          // (a 2nd .or() would merge into one OR, not AND). No quotes needed.
           query = query.ilike('title', `%${safeSearch}%`);
         } else {
           query = query.or(
-            `title.ilike."%${safeSearch}%",location.ilike."%${safeSearch}%"`
+            `title.ilike.%${safeSearch}%,location.ilike.%${safeSearch}%`
           );
         }
       }
