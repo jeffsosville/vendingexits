@@ -117,15 +117,29 @@ function sanitize(term: string): string {
     .trim();
 }
 
-/** Build the ilike VALUE (no column, no quotes) for one keyword. */
+/** Build the ilike VALUE (no column, no quotes) for one keyword.
+ *
+ * IMPORTANT: uses `*` as the wildcard, NOT `%`. Inside a Supabase `.or()`
+ * string the `%` character is not URL-encoded by the client and PostgREST
+ * 500s on it. PostgREST accepts `*` as an equivalent wildcard in ilike,
+ * which avoids the encoding problem entirely. (Documented Supabase gotcha.)
+ *
+ * Internal spaces are also converted to `*` so "gum ball" -> "*gum*ball*"
+ * matches "gum ball", "gumball", "gum  ball".
+ *
+ * Anchored short tokens (ice/air/vac) use " token " boundaries — a literal
+ * leading/trailing space inside the wildcards — to force whole-word matching
+ * so "ice" doesn't hit "service".
+ */
 function ilikeValue(k: VendingKeyword): string {
   const safe = sanitize(k.term);
   if (!safe) return '';
-  // anchor: space on BOTH sides → whole-word match without quotes.
-  // e.g. "% vac %" matches " vac " but not " vacation" or "service".
-  // Trade-off: won't match a term at the very start/end of a field, but
-  // vending listing text effectively always has surrounding words.
-  return k.anchor ? `% ${safe} %` : `%${safe}%`;
+  if (k.anchor) {
+    // whole-word: "* token *" — space boundaries, * wildcards on the ends
+    return `* ${safe} *`;
+  }
+  // substring: convert internal spaces to * wildcards
+  return `*${safe.replace(/ /g, '*')}*`;
 }
 
 /**
