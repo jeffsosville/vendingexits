@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { VENDING_CATEGORIES } from '../lib/vendingCategories';
+import { VENDING_CATEGORIES } from '@/lib/vendingCategories';
 
 interface CategoryTabsProps {
   /** Currently selected category id, or 'all' */
