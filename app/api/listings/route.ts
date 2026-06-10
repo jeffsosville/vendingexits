@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import {
   VENDING_CATEGORIES,
   categoryOrFilter,
-} from '../../../lib/vendingCategories';
+} from '@/lib/vendingCategories';
 
 const SORT_COLUMNS: Record<string, string> = {
   ingested_at: 'first_seen',
