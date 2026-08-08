@@ -4,6 +4,7 @@ import {
   VENDING_CATEGORIES,
   categoryOrFilter,
 } from '@/lib/vendingCategories';
+import { getOurListings, filterOurListings } from '@/data/ourListings';
 
 const SORT_COLUMNS: Record<string, string> = {
   ingested_at: 'first_seen',
@@ -43,7 +44,10 @@ export async function GET(request: NextRequest) {
         })
       );
 
-      return NextResponse.json({ all: allCount || 0, categories: categoryCounts });
+      return NextResponse.json({
+        all: (allCount || 0) + getOurListings().length,
+        categories: categoryCounts,
+      });
     }
 
     // ---- normal listing mode ----
@@ -105,20 +109,36 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: JSON.stringify(error) }, { status: 500 });
     }
 
-    const listings = (data || []).map((r: any) => ({
+    const warehouseListings = (data || []).map((r: any) => ({
       ...r,
       id: r.listing_id,
       header: r.title,            // ListingCard reads `header`
       cashFlow: r.cash_flow,      // card reads camelCase `cashFlow`
       recentlyAdded: false,
+      source: 'warehouse',
     }));
 
-    const totalPages = Math.ceil((count || 0) / limit);
+    // ---- in-house listings ----
+    // Our own brokered listings live in git (data/ourListings.ts), not in the
+    // DealLedger warehouse. They are pinned to the top of page 1 so they lead
+    // the grid, and they respect the same search / price / location filters.
+    // Category tabs are keyword-matched against warehouse columns, so we only
+    // inject when no specific category tab is active.
+    const showOurs = !category || category === 'all';
+    const ourListings = showOurs
+      ? filterOurListings(getOurListings(), { search, minPrice, maxPrice, location })
+      : [];
+
+    const listings =
+      page === 1 ? [...ourListings, ...warehouseListings] : warehouseListings;
+
+    const total = (count || 0) + ourListings.length;
+    const totalPages = Math.ceil(total / limit);
     return NextResponse.json({
       listings,
       pagination: {
         page, limit,
-        total: count || 0,
+        total,
         totalPages,
         hasNext: page < totalPages,
         hasPrev: page > 1,
