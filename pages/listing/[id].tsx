@@ -368,19 +368,20 @@ function WarehouseListingDetail({ listing }: { listing: Listing }) {
 
             {/* Right Column - direct to source, no email capture */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg border-2 border-emerald-200 p-6 sticky top-6">
+              <div className="bg-white rounded-lg border-2 border-amber-200 p-6 sticky top-6">
                 <h3 className="font-bold text-gray-900 mb-2 text-xl">Interested in this listing?</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Contact the broker on the marketplace — no signup required.
+                  Go straight to the broker's own listing — no marketplace gate,
+                  no signup.
                 </p>
 
                 <a
                   href={listing.listing_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-lg transition mb-4"
+                  className="block w-full text-center bg-amber-600 hover:bg-amber-700 text-white font-bold py-4 px-6 rounded-lg transition mb-4"
                 >
-                  View on BizBuySell →
+                  View Broker Listing →
                 </a>
 
                 {listing.broker_account && (
