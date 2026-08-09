@@ -137,8 +137,7 @@ export const OUR_LISTINGS: OurListing[] = [
     ctaHref: '/nda?listing=longmont-co-vending-route',
     ctaLabel: 'Sign NDA & Get Access >',
 
-    // TODO: paste the atm_deals.id for this route once the CRM deal exists.
-    crmDealId: null,
+    crmDealId: '278a9bc7-923a-440f-85dc-fac96d6710af',
 
     broker: {
       name: 'John Sosville',
