@@ -5,7 +5,7 @@
 // WHY THIS FILE EXISTS
 // The public listing grid reads `vending_listings_merge` out of the DealLedger
 // Supabase project, which is a READ-ONLY public warehouse of scraped market
-// data. Our own brokered listings must never be written into it — DealLedger's
+// data. Our own brokered listings must never be written into it  -  DealLedger's
 // value is that it is a neutral registry. So our listings live here, in git,
 // and get merged into the grid at request time.
 //
@@ -21,7 +21,7 @@ export type OurListingFinancial = {
 };
 
 export type OurListing = {
-  /** URL slug — this is what /listing/[id] resolves on */
+  /** URL slug  -  this is what /listing/[id] resolves on */
   id: string;
   listing_id: string;
   source: 'inhouse';
@@ -60,7 +60,7 @@ export type OurListing = {
 
   /**
    * Primary CTA on the detail page. Point this at `/nda?listing=<id>` once
-   * `pages/nda.tsx` is installed — until then it stays a mailto so the button
+   * `pages/nda.tsx` is installed  -  until then it stays a mailto so the button
    * is never dead.
    */
   ctaHref: string;
@@ -82,8 +82,8 @@ export const OUR_LISTINGS: OurListing[] = [
     status: 'active',
     is_active: true,
 
-    header: 'Longmont, CO — 4-Machine Vending Route',
-    title: 'Longmont, CO — 4-Machine Vending Route',
+    header: 'Longmont, CO  -  4-Machine Vending Route',
+    title: 'Longmont, CO  -  4-Machine Vending Route',
 
     price: 120000,
     cashFlow: 28839,
@@ -106,9 +106,9 @@ export const OUR_LISTINGS: OurListing[] = [
       'owner runs it alongside other work with limited weekly hours.',
 
     highlights: [
-      'Four identical machines — three deployed, one in storage for a future placement',
+      'Four identical machines  -  three deployed, one in storage for a future placement',
       'Manufacturing locations (captive daytime workforce, predictable weekday traffic)',
-      'Equipment purchased new in 2026 — no deferred maintenance',
+      'Equipment purchased new in 2026  -  no deferred maintenance',
       'Cashless payment processing in place, so revenue is verifiable from processor data',
       'Owner-operated on a part-time basis alongside other work',
     ],
@@ -123,17 +123,17 @@ export const OUR_LISTINGS: OurListing[] = [
       {
         label: 'Annualized net',
         value: '$28,839',
-        note: 'Monthly average × 12 — not a full trailing twelve months',
+        note: 'Monthly average x 12  -  not a full trailing twelve months',
       },
       {
         label: 'Operating history',
-        value: '3 months (Apr–Jun 2026)',
+        value: '3 months (Apr-Jun 2026)',
         note: 'Route launched April 2026',
       },
     ],
 
     equipment: [
-      '4 × identical vending machines (three deployed, one in storage)',
+      '4 x identical vending machines (three deployed, one in storage)',
       'Cashless / card readers on deployed machines',
       'Frigidaire 20 cu. ft. freezerless refrigerator for product pre-cooling (purchased March 2026)',
     ],
@@ -149,7 +149,7 @@ export const OUR_LISTINGS: OurListing[] = [
 
     machineCount: 4,
     locationTypes: 'Manufacturing',
-    hoursPerWeek: 'Part-time — owner operates it alongside other work',
+    hoursPerWeek: 'Part-time  -  owner operates it alongside other work',
 
     listedOn: '2026-08-08',
     first_seen: '2026-08-08',
@@ -159,13 +159,13 @@ export const OUR_LISTINGS: OurListing[] = [
     ctaHref:
       'mailto:sales@vendingexits.com' +
       '?subject=' +
-      encodeURIComponent('Longmont, CO Vending Route — request full package') +
+      encodeURIComponent('Longmont, CO Vending Route  -  request full package') +
       '&body=' +
       encodeURIComponent(
         "I'd like to receive the full package for the Longmont, CO vending route.\n\n" +
           'Name:\nPhone:\nBuying timeline:\nFunds available:\n'
       ),
-    ctaLabel: 'Request Full Package →',
+    ctaLabel: 'Request Full Package >',
 
     broker: {
       name: 'John Sosville',
@@ -192,7 +192,7 @@ export function getOurListingById(id: string): OurListing | null {
 
 /**
  * Apply the same filters the API applies to warehouse rows, so an in-house
- * listing disappears from the grid when it doesn't match the active search —
+ * listing disappears from the grid when it doesn't match the active search  - 
  * rather than sitting there pinned and looking broken.
  */
 export function filterOurListings(
@@ -207,7 +207,7 @@ export function filterOurListings(
   return listings.filter((l) => {
     if (opts.search) {
       const q = opts.search.toLowerCase();
-      const hay = `${l.title} ${l.location ?? ''} ${l.category ?? ''}`.toLowerCase();
+      const hay = `${l.title} ${l.location ?? ''} ${l.city ?? ''} ${l.state ?? ''} ${l.category ?? ''}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     if (opts.minPrice && (l.price ?? 0) < parseInt(opts.minPrice, 10)) return false;
