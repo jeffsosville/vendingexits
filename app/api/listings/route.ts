@@ -6,6 +6,33 @@ import {
 } from '@/lib/vendingCategories';
 import { getOurListings, filterOurListings } from '@/data/ourListings';
 
+/**
+ * listings_direct stores `state` as a 2-letter code. Users type "Colorado",
+ * "CO", or "Longmont, CO". Resolve any of those to a code so the filter works.
+ */
+const US_STATES: Record<string, string> = {
+  alabama:'AL', alaska:'AK', arizona:'AZ', arkansas:'AR', california:'CA',
+  colorado:'CO', connecticut:'CT', delaware:'DE', florida:'FL', georgia:'GA',
+  hawaii:'HI', idaho:'ID', illinois:'IL', indiana:'IN', iowa:'IA',
+  kansas:'KS', kentucky:'KY', louisiana:'LA', maine:'ME', maryland:'MD',
+  massachusetts:'MA', michigan:'MI', minnesota:'MN', mississippi:'MS',
+  missouri:'MO', montana:'MT', nebraska:'NE', nevada:'NV',
+  'new hampshire':'NH', 'new jersey':'NJ', 'new mexico':'NM', 'new york':'NY',
+  'north carolina':'NC', 'north dakota':'ND', ohio:'OH', oklahoma:'OK',
+  oregon:'OR', pennsylvania:'PA', 'rhode island':'RI', 'south carolina':'SC',
+  'south dakota':'SD', tennessee:'TN', texas:'TX', utah:'UT', vermont:'VT',
+  virginia:'VA', washington:'WA', 'west virginia':'WV', wisconsin:'WI',
+  wyoming:'WY', 'district of columbia':'DC',
+};
+const STATE_CODES = new Set(Object.values(US_STATES));
+
+function resolveState(input: string): string | null {
+  const s = input.trim().toLowerCase();
+  if (!s) return null;
+  if (s.length === 2 && STATE_CODES.has(s.toUpperCase())) return s.toUpperCase();
+  return US_STATES[s] ?? null;
+}
+
 const SORT_COLUMNS: Record<string, string> = {
   ingested_at: 'first_seen',
   scraped_at:  'scraped_at',
@@ -90,15 +117,39 @@ export async function GET(request: NextRequest) {
           query = query.ilike('title', `%${safeSearch}%`);
         } else {
           // Use * wildcards (not %) inside .or() to avoid URL-encoding 500s.
-          query = query.or(
-            `title.ilike.*${safeSearch}*,location.ilike.*${safeSearch}*`
-          );
+          // NOTE: no `location` column exists, and `description` is null on
+          // every row from listings_direct. Match title / city / state.
+          const clauses = [
+            `title.ilike.*${safeSearch}*`,
+            `city.ilike.*${safeSearch}*`,
+            `state.ilike.*${safeSearch}*`,
+          ];
+          // "Colorado" should find CO rows even though only the code is stored.
+          const st = resolveState(search);
+          if (st) clauses.push(`state.ilike.${st}`);
+          query = query.or(clauses.join(','));
         }
       }
     }
     if (minPrice) query = query.gte('price', parseInt(minPrice));
     if (maxPrice) query = query.lte('price', parseInt(maxPrice));
-    if (location) query = query.ilike('location', `%${location}%`);
+    if (location) {
+      // No `location` column exists — city and state are separate.
+      // Accepts "CO", "Colorado", "Longmont", or "Longmont, CO".
+      const raw = location.trim();
+      const parts = raw.split(',').map((p) => p.trim()).filter(Boolean);
+
+      if (parts.length >= 2) {
+        // "City, ST" — filter both, AND'd. No .or() needed.
+        const st = resolveState(parts[parts.length - 1]);
+        query = query.ilike('city', `%${parts[0]}%`);
+        if (st) query = query.ilike('state', st);
+      } else {
+        const st = resolveState(raw);
+        if (st) query = query.ilike('state', st);
+        else query = query.ilike('city', `%${raw}%`);
+      }
+    }
 
     query = query
       .order(sortCol, { ascending: sortOrder, nullsFirst: false })
