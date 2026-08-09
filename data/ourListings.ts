@@ -63,6 +63,13 @@ export type OurListing = {
   ctaHref: string;
   ctaLabel: string;
 
+  /**
+   * The `atm_deals.id` in the ATM CRM project that this listing maps to.
+   * The NDA still records without it, but the buyer's Deal Hub renders empty,
+   * so set it once after creating the deal in the CRM.
+   */
+  crmDealId: string | null;
+
   broker: {
     name: string;
     firm: string;
@@ -127,17 +134,11 @@ export const OUR_LISTINGS: OurListing[] = [
     first_seen: '2026-08-08',
     listing_url: '/listing/longmont-co-vending-route',
 
-    // Swap to '/nda?listing=longmont-co-vending-route' once pages/nda.tsx lands.
-    ctaHref:
-      'mailto:sales@vendingexits.com' +
-      '?subject=' +
-      encodeURIComponent('Longmont, CO Vending Route  -  request full package') +
-      '&body=' +
-      encodeURIComponent(
-        "I'd like to receive the full package for the Longmont, CO vending route.\n\n" +
-          'Name:\nPhone:\nBuying timeline:\nFunds available:\n'
-      ),
-    ctaLabel: 'Request Full Package >',
+    ctaHref: '/nda?listing=longmont-co-vending-route',
+    ctaLabel: 'Sign NDA & Get Access >',
+
+    // TODO: paste the atm_deals.id for this route once the CRM deal exists.
+    crmDealId: null,
 
     broker: {
       name: 'John Sosville',
