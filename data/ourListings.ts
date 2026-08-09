@@ -36,8 +36,6 @@ export type OurListing = {
   /** ListingCard reads camelCase; detail page reads snake_case. Keep both. */
   cashFlow: number | null;
   cash_flow: number | null;
-  /** Plain-English derivation of the cash flow figure. Shown on the page. */
-  cashFlowBasis: string;
 
   city: string | null;
   state: string | null;
@@ -48,7 +46,6 @@ export type OurListing = {
   highlights: string[];
   financials: OurListingFinancial[];
   equipment: string[];
-  diligenceNotes: string[];
 
   machineCount: number | null;
   locationTypes: string | null;
@@ -88,10 +85,6 @@ export const OUR_LISTINGS: OurListing[] = [
     price: 120000,
     cashFlow: 28839,
     cash_flow: 28839,
-    cashFlowBasis:
-      'Annualized from the May and June 2026 adjusted monthly average of $2,403. ' +
-      'April 2026 was the first partial month of operation and ran at a loss; it is ' +
-      'excluded from the average. Full three-month P&L released under NDA.',
 
     city: 'Longmont',
     state: 'CO',
@@ -115,21 +108,8 @@ export const OUR_LISTINGS: OurListing[] = [
 
     financials: [
       { label: 'Asking price', value: '$120,000' },
-      {
-        label: 'Adjusted monthly net',
-        value: '$2,403',
-        note: 'Average of May and June 2026 after owner add-backs',
-      },
-      {
-        label: 'Annualized net',
-        value: '$28,839',
-        note: 'Monthly average x 12  -  not a full trailing twelve months',
-      },
-      {
-        label: 'Operating history',
-        value: '3 months (Apr-Jun 2026)',
-        note: 'Route launched April 2026',
-      },
+      { label: 'Monthly net cash flow', value: '$2,403' },
+      { label: 'Annual net cash flow', value: '$28,839' },
     ],
 
     equipment: [
@@ -138,14 +118,6 @@ export const OUR_LISTINGS: OurListing[] = [
       'Frigidaire 20 cu. ft. freezerless refrigerator for product pre-cooling (purchased March 2026)',
     ],
 
-    diligenceNotes: [
-      'The route began operating in April 2026, so there is no trailing-twelve-month history. ' +
-        'The figures above annualize a two-month average.',
-      'April 2026 carried the initial product fill, which distorts cost of goods across all ' +
-        'three months. Buyers should model a normalized COGS rate rather than the reported one.',
-      'Add-backs and location agreements are provided in full under NDA so buyers can form ' +
-        'their own view of sustainable cash flow.',
-    ],
 
     machineCount: 4,
     locationTypes: 'Manufacturing',
