@@ -173,10 +173,6 @@ function OurListingDetail({ listing }: { listing: OurListing }) {
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-gray-600 mt-4 bg-gray-50 border rounded-lg p-3">
-                  <span className="font-semibold text-gray-900">How this figure is derived: </span>
-                  {listing.cashFlowBasis}
-                </p>
               </div>
 
               <div className="bg-white p-6 rounded-lg border">
@@ -186,22 +182,6 @@ function OurListingDetail({ listing }: { listing: OurListing }) {
                     <li key={e} className="flex items-start gap-2 text-gray-700">
                       <span className="text-gray-400 mt-0.5">•</span>
                       <span>{e}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg border border-gray-300">
-                <h2 className="font-bold text-gray-900 mb-2 text-lg">What a Buyer Should Diligence</h2>
-                <p className="text-sm text-gray-600 mb-4">
-                  We put these up front rather than leaving them to be discovered. It is how we
-                  protect both the buyer and the seller.
-                </p>
-                <ul className="space-y-3">
-                  {listing.diligenceNotes.map((n) => (
-                    <li key={n} className="flex items-start gap-2 text-gray-700 text-sm">
-                      <span className="text-gray-400 mt-0.5">→</span>
-                      <span>{n}</span>
                     </li>
                   ))}
                 </ul>
