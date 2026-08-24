@@ -49,7 +49,7 @@ export async function createNDAToken(
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 90);
 
-  const listing = getOurListingById(input.source_listing_slug);
+  const listing = await getOurListingById(input.source_listing_slug);
   const dealId: string | null = listing?.crmDealId ?? null;
 
   if (!dealId) {
