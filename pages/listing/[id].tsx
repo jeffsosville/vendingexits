@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // In-house listings resolve from git, not the warehouse. Check first so the
   // page works regardless of which Supabase project the env vars point at.
-  const ours = getOurListingById(id);
+  const ours = await getOurListingById(id);
   if (ours) return { props: { ourListing: ours } };
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
