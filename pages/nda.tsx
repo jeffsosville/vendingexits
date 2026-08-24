@@ -202,7 +202,7 @@ export default function NdaPage({ listing }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const slug = typeof ctx.query.listing === 'string' ? ctx.query.listing : '';
-  const listing = getOurListingById(slug);
+  const listing = await getOurListingById(slug);
   if (!listing) return { notFound: true };
 
   return {
