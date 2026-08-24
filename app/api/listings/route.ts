@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
       );
 
       return NextResponse.json({
-        all: (allCount || 0) + getOurListings().length,
+        all: (allCount || 0) + (await getOurListings()).length,
         categories: categoryCounts,
       });
     }
@@ -177,7 +177,7 @@ export async function GET(request: NextRequest) {
     // inject when no specific category tab is active.
     const showOurs = !category || category === 'all';
     const ourListings = showOurs
-      ? filterOurListings(getOurListings(), { search, minPrice, maxPrice, location })
+      ? filterOurListings(await getOurListings(), { search, minPrice, maxPrice, location })
       : [];
 
     const listings =
