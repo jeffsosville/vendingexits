@@ -2,6 +2,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Header from '../components/Header';
+import InquiryForm from '../components/InquiryForm';
 import Footer from '../components/Footer';
 
 export default function Sell() {
@@ -126,17 +127,16 @@ export default function Sell() {
             </ul>
           </div>
 
-          <div className="text-center">
-            <a
-              href="mailto:hello@VendingExits.com?subject=Interested in Listing My Vending Business"
-              className="inline-block px-8 py-4 bg-amber-600 text-white font-bold text-lg rounded-lg hover:bg-amber-700 transition"
-            >
-              Get Started - Email Us
-            </a>
+          <div className="rounded-lg border p-6" id="get-started">
+            <h2 className="text-2xl font-bold mb-2">Get a Free, Confidential Valuation</h2>
+            <p className="text-gray-600 mb-6">
+              Tell us a little about your route. We'll follow up within one business day.
+            </p>
+            <InquiryForm mode="seller" accent="amber" />
             <p className="mt-4 text-sm text-gray-600">
-              Or email us directly at{' '}
-              <a href="mailto:hello@VendingExits.com" className="text-amber-600 hover:underline">
-                hello@VendingExits.com
+              Prefer email?{' '}
+              <a href="mailto:sales@vendingexits.com" className="text-amber-600 hover:underline">
+                sales@vendingexits.com
               </a>
             </p>
           </div>
