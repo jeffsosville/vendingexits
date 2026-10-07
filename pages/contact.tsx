@@ -2,6 +2,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Header from '../components/Header';
+import InquiryForm from '../components/InquiryForm';
 import Footer from '../components/Footer';
 
 export default function Contact() {
@@ -48,7 +49,7 @@ export default function Contact() {
                 Want to list your vending business? Email us at{' '}
                 <a href="mailto:hello@VendingExits.com" className="text-amber-600 hover:underline">
                   hello@VendingExits.com
-                </a>ƒ
+                </a>
                 {' '}and we'll get back to you within 24 hours.
               </p>
             </div>
@@ -63,6 +64,11 @@ export default function Contact() {
               </p>
             </div>
           </div>
+        </div>
+
+        <div className="bg-white rounded-xl border p-8 mb-8">
+          <h2 className="text-2xl font-bold mb-4">Send Us a Message</h2>
+          <InquiryForm mode="contact" accent="amber" />
         </div>
 
         <div className="text-center">

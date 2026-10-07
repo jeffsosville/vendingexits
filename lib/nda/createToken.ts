@@ -1,6 +1,7 @@
 import { randomBytes } from 'crypto';
 import { getCrmSupabase } from '@/lib/crmSupabase';
 import { getOurListingById } from '@/data/ourListings';
+import { getVerticalId } from '@/lib/crmInbound';
 
 /**
  * Ported from atmbrokerage-next/lib/nda/createToken.ts.
@@ -61,6 +62,8 @@ export async function createNDAToken(
 
   // PRIMARY WRITE — deal_tokens (the Deal Hub reads this)
   const { error: insertError } = await supabase.from('deal_tokens').insert({
+    // The CRM also derives this from the deal, but set it so an unmatched NDA still lands in the right vertical
+    vertical_id: await getVerticalId(),
     token,
     deal_id: dealId,
     listing_id: dealId,
