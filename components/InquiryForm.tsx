@@ -1,13 +1,18 @@
 import { useState } from 'react';
 
-type Props = { mode: 'seller' | 'contact'; accent?: 'amber' | 'emerald' };
+type Props = {
+  mode: 'seller' | 'contact';
+  accent?: 'amber' | 'emerald';
+  /** Prefixes the message (e.g. "Air & Vac") so the lead's segment shows in the CRM and email. */
+  tag?: string;
+};
 
 const ACCENTS = {
   amber: { btn: 'bg-amber-600 hover:bg-amber-700', ring: 'focus:ring-amber-500' },
   emerald: { btn: 'bg-emerald-600 hover:bg-emerald-700', ring: 'focus:ring-emerald-500' },
 };
 
-export default function InquiryForm({ mode, accent = 'amber' }: Props) {
+export default function InquiryForm({ mode, accent = 'amber', tag }: Props) {
   const [state, setState] = useState<'idle' | 'sending' | 'done'>('idle');
   const [error, setError] = useState('');
   const a = ACCENTS[accent];
@@ -17,7 +22,8 @@ export default function InquiryForm({ mode, accent = 'amber' }: Props) {
     e.preventDefault();
     setError('');
     setState('sending');
-    const f = Object.fromEntries(new FormData(e.currentTarget).entries());
+    const f: Record<string, FormDataEntryValue> = Object.fromEntries(new FormData(e.currentTarget).entries());
+    if (tag) f.message = `[${tag}] ${String(f.message || '')}`.trim();
     try {
       const res = await fetch('/api/inquiry', {
         method: 'POST',
