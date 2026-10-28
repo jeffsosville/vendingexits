@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import {
-  VENDING_CATEGORIES,
-  categoryOrFilter,
+  VENDING_CATEGORY_IDS,
+  classifyListing,
+  countByCategory,
 } from '@/lib/vendingCategories';
 import { getOurListings, filterOurListings } from '@/data/ourListings';
 
@@ -50,30 +51,22 @@ export async function GET(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { searchParams } = new URL(request.url);
 
+    // Groups are assigned in JS (one per listing), so read the light columns
+    // for every active row once and classify. Cheap at index size (hundreds).
+    const classifyAll = async () => {
+      const { data } = await supabase
+        .from('vending_listings_merge')
+        .select('listing_id,title,description')
+        .eq('is_active', true);
+      return data || [];
+    };
+
     // ---- counts mode: return total + per-category counts for the tab badges ----
     if (searchParams.get('counts') === 'true') {
-      const base = () =>
-        supabase
-          .from('vending_listings_merge')
-          .select('*', { count: 'exact', head: true })
-          .eq('is_active', true);
-
-      const { count: allCount } = await base();
-
-      const categoryCounts: Record<string, number> = {};
-      await Promise.all(
-        VENDING_CATEGORIES.map(async (cat) => {
-          const orFilter = categoryOrFilter(cat.id);
-          let q = base();
-          if (orFilter) q = q.or(orFilter);
-          const { count } = await q;
-          categoryCounts[cat.id] = count || 0;
-        })
-      );
-
+      const rows = await classifyAll();
       return NextResponse.json({
-        all: (allCount || 0) + (await getOurListings()).length,
-        categories: categoryCounts,
+        all: rows.length + (await getOurListings()).length,
+        categories: countByCategory(rows),
       });
     }
 
@@ -96,23 +89,21 @@ export async function GET(request: NextRequest) {
       .select('*', { count: 'exact' })
       .eq('is_active', true);
 
-    // Category filter (Option A: keyword match across text columns).
-    // When a real category_id column is backfilled, replace this block with:
-    //   if (category && category !== 'all') query = query.eq('category_id', category);
-    //
-    // NOTE: only ONE top-level .or() can be used per query — PostgREST merges
-    // multiple .or() calls into a single OR group rather than ANDing them.
-    // So the category uses .or(), and search is applied as ANDed .ilike filters.
-    if (category && category !== 'all') {
-      const orFilter = categoryOrFilter(category);
-      if (orFilter) query = query.or(orFilter);
+    // Category filter: classify in JS, then filter by id. Only one top-level
+    // .or() works per PostgREST query, so search below stays ANDed .ilike.
+    const hasCategory = !!category && category !== 'all' && VENDING_CATEGORY_IDS.includes(category);
+    if (hasCategory) {
+      const ids = (await classifyAll())
+        .filter((r: any) => classifyListing(r) === category)
+        .map((r: any) => r.listing_id);
+      query = query.in('listing_id', ids.length ? ids : [-1]);
     }
 
     if (search) {
       const safeSearch = search.replace(/[^a-zA-Z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
       if (safeSearch) {
-        if (category && category !== 'all') {
-          // category already used .or(); AND the search via a single .ilike
+        if (hasCategory) {
+          // category uses .in(), search uses a plain .ilike; AND the search via a single .ilike
           // (a 2nd .or() would merge into one OR, not AND). No quotes needed.
           query = query.ilike('title', `%${safeSearch}%`);
         } else {

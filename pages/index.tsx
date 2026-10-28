@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import InquiryForm from '../components/InquiryForm';
-import { categoryOrFilter } from '../lib/vendingCategories';
+import { VENDING_CATEGORIES, countByCategory } from '../lib/vendingCategories';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL as string,
@@ -28,8 +28,9 @@ type Stats = {
   total: number;
   addedThisWeek: number;
   verifiedToday: number;
-  airVac: number;
 };
+
+type Group = { id: string; name: string; emoji: string; blurb: string; count: number };
 
 const money = (n?: number | null) =>
   n == null
@@ -75,23 +76,20 @@ export async function getServerSideProps() {
     .eq('is_active', true)
     .gte('last_verified_at', today.toISOString());
 
-  // Air & Vac listings count (same keyword match as the /listings tab)
-  let airVacCount = 0;
-  const airVacFilter = categoryOrFilter('air-vac');
-  if (airVacFilter) {
-    const { count } = await supabase
-      .from("vending_listings_merge")
-      .select("*", { count: 'exact', head: true })
-      .eq('is_active', true)
-      .or(airVacFilter);
-    airVacCount = count || 0;
-  }
+  // Per-group counts for "Browse by type" (same classifier as /listings tabs)
+  const { data: lightRows } = await supabase
+    .from("vending_listings_merge")
+    .select("title,description")
+    .eq('is_active', true);
+  const groupCounts = countByCategory(lightRows ?? []);
+  const groups: Group[] = VENDING_CATEGORIES.filter((c) => c.vending).map((c) => ({
+    id: c.id, name: c.name, emoji: c.emoji, blurb: c.blurb, count: groupCounts[c.id] || 0,
+  }));
 
   const stats: Stats = {
     total: totalCount || 0,
     addedThisWeek: weekCount || 0,
     verifiedToday: todayCount || 0,
-    airVac: airVacCount,
   };
 
   const top10 = (data ?? []).map((r: any) => ({
@@ -111,6 +109,7 @@ export async function getServerSideProps() {
     props: {
       top10,
       stats,
+      groups,
       errorAuto: error?.message || null,
     },
   };
@@ -119,17 +118,19 @@ export async function getServerSideProps() {
 export default function Home({
   top10,
   stats,
+  groups,
   errorAuto,
 }: {
   top10: Top10[];
   stats: Stats;
+  groups: Group[];
   errorAuto?: string | null;
 }) {
   return (
     <>
       <Head>
         <title>Vending Exits — {stats.total} Verified Vending Businesses For Sale</title>
-        <meta name="description" content="Find profitable vending machine businesses for sale. Browse air and vacuum routes, beverage and snack vending, combo routes, and specialty vending operations. Free valuations for air & vac route owners." />
+        <meta name="description" content="Find profitable vending machine businesses for sale. Browse snack and beverage routes, micro markets, bulk, water and ice, air and vacuum, and amusement vending businesses." />
       </Head>
 
       <Header />
@@ -147,54 +148,6 @@ export default function Home({
             No franchises. No spam. No dead listings.
           </p>
         </header>
-
-        {/* AIR & VAC — sellers first */}
-        <section id="air-vac" className="mb-10 scroll-mt-24">
-          <div className="rounded-2xl border-2 border-amber-500 bg-amber-50 overflow-hidden shadow-sm">
-            <div className="grid md:grid-cols-2">
-              <div className="p-6 md:p-8">
-                <div className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
-                  <span aria-hidden>🌬️</span> Air &amp; Vac Routes
-                </div>
-                <h2 className="mt-4 text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900">
-                  Own air &amp; vacuum machines? Find out what your route is worth.
-                </h2>
-                <p className="mt-3 text-gray-700">
-                  Tire inflation and coin-op vacuum routes at gas stations, c-stores and car washes
-                  are some of the steadiest cash flow in vending. We put them in front of buyers
-                  who already know the model.
-                </p>
-                <ul className="mt-5 space-y-2 text-sm text-gray-800">
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-600 font-bold">✓</span>
-                    <span>Free, confidential valuation — no listing commitment</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-600 font-bold">✓</span>
-                    <span>Buyers sign an NDA before they see your locations</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-600 font-bold">✓</span>
-                    <span>From the team behind 200+ ATM route sales worth $100M+</span>
-                  </li>
-                </ul>
-                <Link
-                  href="/listings?category=air-vac"
-                  className="mt-6 inline-flex items-center gap-1 text-amber-700 hover:text-amber-800 font-semibold text-sm"
-                >
-                  {stats.airVac > 0
-                    ? `Buying? Browse ${stats.airVac} Air & Vac listings →`
-                    : 'Buying? Browse Air & Vac listings →'}
-                </Link>
-              </div>
-              <div className="bg-white p-6 md:p-8 border-t md:border-t-0 md:border-l border-amber-200">
-                <h3 className="text-lg font-bold mb-1">Get your free valuation</h3>
-                <p className="text-sm text-gray-600 mb-4">We&apos;ll follow up within one business day.</p>
-                <InquiryForm mode="seller" accent="amber" tag="Air & Vac" />
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* EMAIL CAPTURE */}
         <section className="mb-8">
@@ -244,6 +197,37 @@ export default function Home({
             Explore Full Index
           </Link>
         </div>
+
+        {/* Browse by type */}
+        <section className="mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold mb-2">Browse by Type</h2>
+          <p className="text-gray-600 mb-6">The main kinds of vending businesses buyers look for.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {groups.map((g) => {
+              const isAirVac = g.id === 'air-vac';
+              const href = g.count > 0 ? `/listings?category=${g.id}` : isAirVac ? '#air-vac' : '/sell';
+              return (
+                <Link
+                  key={g.id}
+                  href={href}
+                  className="group rounded-2xl border border-gray-200 bg-white p-5 hover:border-amber-300 hover:shadow-md transition"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl" aria-hidden>{g.emoji}</span>
+                    <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-bold text-gray-700">
+                      {g.count} {g.count === 1 ? 'listing' : 'listings'}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 font-bold text-gray-900 group-hover:text-amber-700">{g.name}</h3>
+                  <p className="mt-1 text-sm text-gray-600">{g.blurb}</p>
+                  <span className="mt-3 inline-block text-sm font-semibold text-amber-600">
+                    {g.count > 0 ? 'Browse →' : 'Selling one? Get a valuation →'}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
 
         {/* Top 10 */}
         <section>
@@ -338,6 +322,46 @@ export default function Home({
           <div className="mt-6 text-center text-sm text-gray-500">
             <p className="font-semibold">Updated weekly</p>
             <p>Verified • No franchises • No lead-gen</p>
+          </div>
+        </section>
+
+        {/* Air & Vac sellers (campaign landing: vendingexits.com/#air-vac) */}
+        <section id="air-vac" className="mt-12 scroll-mt-24">
+          <div className="rounded-2xl border border-amber-300 bg-amber-50 overflow-hidden">
+            <div className="grid md:grid-cols-2">
+              <div className="p-6 md:p-8">
+                <div className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                  <span aria-hidden>🌬️</span> Air &amp; Vac
+                </div>
+                <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-gray-900">
+                  Own air &amp; vacuum machines? Find out what your route is worth.
+                </h2>
+                <p className="mt-3 text-gray-700">
+                  Tire inflation and coin-op vacuum routes at gas stations, c-stores and car washes
+                  sell like any other vending route: on locations, contracts and steady cash flow.
+                  We put them in front of buyers who know the model.
+                </p>
+                <ul className="mt-5 space-y-2 text-sm text-gray-800">
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-600 font-bold">✓</span>
+                    <span>Free, confidential valuation, no listing commitment</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-600 font-bold">✓</span>
+                    <span>Buyers sign an NDA before they see your locations</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-600 font-bold">✓</span>
+                    <span>From the team behind 200+ ATM route sales worth $100M+</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="bg-white p-6 md:p-8 border-t md:border-t-0 md:border-l border-amber-200">
+                <h3 className="text-lg font-bold mb-1">Get your free valuation</h3>
+                <p className="text-sm text-gray-600 mb-4">We&apos;ll follow up within one business day.</p>
+                <InquiryForm mode="seller" accent="amber" tag="Air & Vac" />
+              </div>
+            </div>
           </div>
         </section>
 

@@ -1,183 +1,196 @@
 // lib/vendingCategories.ts
 //
-// Single source of truth for VendingExits sub-categories.
-// Used by both the /api/listings route (server-side filtering + counts)
-// and the CategoryTabs UI component.
+// Single source of truth for VendingExits groups. Used by /api/listings
+// (tab filtering + counts), the homepage "Browse by type" row, and CategoryTabs.
 //
-// MATCHING MODEL: each listing is assigned to exactly ONE category — the
-// first match in priority order. Keeps header counts honest.
+// MATCHING MODEL
+//   - Each listing gets exactly ONE group: the first group in priority order
+//     with a matching phrase. Counts across groups add up to the total.
+//   - Phrases match on whole words (" ice " never matches "service";
+//     "air vac" never matches "repair ... vacation").
+//   - Title is checked first; the description is only used when the title
+//     names no group. Scraped descriptions often carry "Related Posts" lists
+//     of OTHER routes, so everything after those markers is ignored.
+//   - A generic "vending route" with no type falls into Snack & Beverage —
+//     that's what the industry means by a traditional route.
+//   - Distribution (DSD) routes — tortilla, bread, wholesale snack — aren't
+//     vending. They get their own bucket so they don't inflate vending groups.
 //
-// POSTGREST SAFETY (the hard-won part):
-//   - .or() filter VALUES use `*` as the wildcard, never `%`. Raw `%` in an
-//     .or() string is not URL-encoded by the Supabase client and PostgREST
-//     500s on it.
-//   - Values contain NO literal spaces, NO quotes, NO &()" — a literal space
-//     inside an unquoted .or() value also 500s. Multi-word terms join their
-//     words with `*` (e.g. "gum ball" -> "*gum*ball*").
-//   - We therefore avoid ultra-short ambiguous tokens (ice/vac/ppe) as bare
-//     matches; they're covered by distinctive multi-word siblings instead.
-//
-// MIGRATION NOTE: when you backfill a real `category_id` column, swap the
-// keyword .or() for .eq('category_id', id). The UI does not change.
-
-export interface VendingKeyword {
-  /** Lowercased term. Letters/digits/spaces only. */
-  term: string;
-}
+// Classification runs in JS (not PostgREST .or()), so the API reads
+// id/title/description for active rows and filters by listing_id.
 
 export interface VendingCategory {
   id: string;
   name: string;
   emoji: string;
-  keywords: VendingKeyword[];
+  /** One line for the homepage card. */
+  blurb: string;
+  /** Lowercase phrases, letters/digits/spaces only. */
+  phrases: string[];
+  /** Vending group shown on the homepage. false = index tab only. */
+  vending: boolean;
 }
 
-const kw = (term: string): VendingKeyword => ({ term });
-
-// Order = priority (most specific first).
-export const VENDING_CATEGORIES: VendingCategory[] = [
+// Order = classification priority (most specific first).
+const PRIORITY: VendingCategory[] = [
   {
-    id: 'water-ice',
-    name: 'Water & Ice',
-    emoji: '💧',
-    keywords: [
-      // "water" is safe as a substring in vending text. For "ice" we avoid
-      // bare/leading forms because "service vending" contains "...ice vending".
-      // The forms below cannot be hit by "service": "service" has no "machine",
-      // "house", "cream", or "bagged/bulk" following the embedded "ice".
-      kw('water'), kw('ice machine'), kw('ice house'),
-      kw('bagged ice'), kw('bulk ice'), kw('ice cream'),
+    id: 'delivery',
+    name: 'Delivery Routes',
+    emoji: '🚚',
+    blurb: 'Bread, tortilla and wholesale snack distribution routes.',
+    vending: false,
+    phrases: [
+      'tortilla', 'mission route', 'mission foods', 'bread route', 'bakery',
+      'bimbo', 'pepperidge', 'tastykake', 'entenmann', 'utz', 'dsd route',
+      'wholesale', 'distribution route', 'delivery route', 'mountain man',
+      'pool route',
     ],
   },
   {
     id: 'air-vac',
     name: 'Air & Vac',
     emoji: '🌬️',
-    keywords: [
-      // bare "vac" dropped (matches "vacation"); "vacuum" + multiword cover it.
-      kw('vacuum'), kw('air vac'), kw('air and vac'), kw('tire inflation'),
-      kw('air machine'), kw('coin op vacuum'),
+    blurb: 'Tire inflation and vacuum machines at gas stations and car washes.',
+    vending: true,
+    phrases: [
+      'air vac', 'air and vac', 'air vacuum', 'tire inflation', 'tire air',
+      'air machine', 'air machines', 'air pump', 'air pumps', 'car vacuum',
+      'coin op vacuum', 'vacuum machine', 'vacuum machines', 'car wash vacuum',
     ],
   },
   {
-    id: 'healthy-food',
-    name: 'Healthy Food',
-    emoji: '🥗',
-    keywords: [
-      kw('healthy'), kw('fresh food'), kw('salad'), kw('micro market'),
-      kw('micromarket'), kw('kombucha'), kw('protein'), kw('wellness'),
+    id: 'micro-market',
+    name: 'Micro Markets & Coffee',
+    emoji: '🏬',
+    blurb: 'Self-checkout markets, smart coolers and office coffee service.',
+    vending: true,
+    phrases: [
+      'micro market', 'micro markets', 'micromarket', 'micromarkets',
+      'smart cooler', 'smart coolers', 'smart fridge', 'smart fridges',
+      'office coffee', 'pantry service', 'self checkout', 'unattended retail',
+    ],
+  },
+  {
+    id: 'water-ice',
+    name: 'Water & Ice',
+    emoji: '💧',
+    blurb: 'Water refill stations and bagged-ice vending.',
+    vending: true,
+    phrases: [
+      'water vending', 'water machine', 'water machines', 'water refill',
+      'water station', 'water stations', 'water store', 'ice vending',
+      'ice machine', 'ice machines', 'ice house', 'bagged ice', 'bulk ice',
     ],
   },
   {
     id: 'bulk',
     name: 'Bulk',
     emoji: '🍬',
-    keywords: [
-      // bare "toy" dropped (too ambiguous); "candy machine"/"gumball" cover bulk.
-      kw('bulk'), kw('gumball'), kw('gum ball'), kw('capsule'),
-      kw('sticker'), kw('bouncy ball'), kw('candy machine'),
+    blurb: 'Gumball, candy, capsule toy and sticker machines.',
+    vending: true,
+    phrases: [
+      'bulk vending', 'bulk candy', 'gumball', 'gumballs', 'gum ball',
+      'capsule', 'capsules', 'sticker', 'stickers', 'toy vending',
+      'toys vending', 'collectible toy', 'candy machine', 'candy machines',
+    ],
+  },
+  {
+    id: 'amusement',
+    name: 'Amusement',
+    emoji: '🕹️',
+    blurb: 'Claw machines, kiddie rides and arcade games.',
+    vending: true,
+    phrases: [
+      'claw', 'claw machine', 'crane machine', 'arcade', 'amusement',
+      'kiddie ride', 'kiddie rides', 'jukebox', 'skill game', 'skill games',
     ],
   },
   {
     id: 'specialty',
-    name: 'Specialty & Luxury',
+    name: 'Specialty & Healthy',
     emoji: '✨',
-    keywords: [
-      kw('specialty'), kw('luxury'), kw('electronics'), kw('charger'),
-      kw('headphone'), kw('cosmetic'), kw('beauty'), kw('flower'),
-      kw('fragrance'), kw('novelty'),
-    ],
-  },
-  {
-    id: 'industrial',
-    name: 'Industrial & Automated',
-    emoji: '🏭',
-    keywords: [
-      // bare "ppe"/"mro"/"b2b" dropped; distinctive terms cover the segment.
-      kw('industrial'), kw('locker'), kw('parcel'), kw('automated'),
-      kw('tool crib'), kw('warehouse'), kw('amusement'), kw('arcade'),
-      kw('coin operated'),
+    blurb: 'Healthy food, cotton candy, electronics, PPE and lockers.',
+    vending: true,
+    phrases: [
+      'healthy', 'health focused', 'fresh food', 'salad', 'cotton candy',
+      'electronics', 'charger', 'chargers', 'ppe', 'locker', 'lockers',
+      'industrial vending', 'cosmetic', 'beauty', 'flower', 'specialty vending',
     ],
   },
   {
     id: 'snack-beverage',
     name: 'Snack & Beverage',
     emoji: '🥤',
-    keywords: [
-      kw('snack'), kw('beverage'), kw('soda'), kw('drink'), kw('combo'),
-      kw('coffee'), kw('food vending'), kw('candy'), kw('chips'),
-      kw('full line'),
+    blurb: 'Traditional soda, snack and combo routes — the core of vending.',
+    vending: true,
+    phrases: [
+      'snack', 'snacks', 'soda', 'beverage', 'beverages', 'drink', 'drinks',
+      'combo', 'candy', 'coffee vending', 'food vending', 'full line',
+      'soft drinks',
+      // generic fallback: a vending route with no stated type
+      'vending', 'vending route', 'vending machine', 'vending machines',
     ],
   },
 ];
 
+/** Display order: traditional first, then the rest; non-vending last. */
+const DISPLAY_ORDER = [
+  'snack-beverage', 'micro-market', 'bulk', 'water-ice', 'air-vac',
+  'amusement', 'specialty', 'delivery',
+];
+
+export const VENDING_CATEGORIES: VendingCategory[] = DISPLAY_ORDER.map(
+  (id) => PRIORITY.find((c) => c.id === id)!
+);
+
 export const VENDING_CATEGORY_IDS = VENDING_CATEGORIES.map((c) => c.id);
 
-/** Sanitize to letters/digits/spaces only; collapse whitespace. */
-function sanitize(term: string): string {
-  return term
+function sanitize(text: string): string {
+  return text
     .toLowerCase()
     .replace(/[^a-z0-9 ]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-/**
- * Build the ilike VALUE (no column, no quotes) for one keyword.
- * Uses `*` wildcards (never `%`) and contains NO literal spaces:
- * internal spaces become `*`. e.g. "gum ball" -> "*gum*ball*".
- */
-function ilikeValue(term: string): string {
-  const safe = sanitize(term);
-  if (!safe) return '';
-  return `*${safe.replace(/ /g, '*')}*`;
+/** Drop "Related Posts" / "Recent Posts" lists of other listings. */
+function stripRelated(desc: string): string {
+  const cut = desc.search(/related posts|recent posts|routes by state/i);
+  return cut >= 0 ? desc.slice(0, cut) : desc;
 }
 
-/**
- * Build the Supabase `.or()` filter string for a category.
- * Output: `col.ilike.*value*` clauses joined by commas. No %, no quotes,
- * no literal spaces, no reserved chars. PostgREST-safe.
- */
-export function categoryOrFilter(categoryId: string): string | null {
-  const cat = VENDING_CATEGORIES.find((c) => c.id === categoryId);
-  if (!cat) return null;
-  // Only filter on columns that exist on vending_listings_merge.
-  // (business_type / category are read by the detail page via select('*')
-  // but do NOT exist as real columns — filtering on them errors 42703.)
-  const cols = ['title', 'description'];
-  const clauses: string[] = [];
-  for (const k of cat.keywords) {
-    const val = ilikeValue(k.term);
-    if (!val) continue;
-    for (const col of cols) {
-      clauses.push(`${col}.ilike.${val}`);
-    }
-  }
-  return clauses.length ? clauses.join(',') : null;
-}
-
-/**
- * Client-side classifier mirroring the server logic (substring match).
- * Used for the future category_id backfill and any client tagging.
- */
-export function classifyListing(listing: {
-  title?: string | null;
-  description?: string | null;
-  business_type?: string | null;
-  category?: string | null;
-}): string | null {
-  const hay = sanitize(
-    [listing.title, listing.description, listing.business_type, listing.category]
-      .filter(Boolean)
-      .join(' ')
-  );
-  if (!hay) return null;
-
-  for (const cat of VENDING_CATEGORIES) {
-    for (const k of cat.keywords) {
-      const term = sanitize(k.term);
-      if (term && hay.includes(term)) return cat.id;
+function firstMatch(text: string): string | null {
+  const hay = ` ${sanitize(text)} `;
+  if (hay.trim() === '') return null;
+  for (const cat of PRIORITY) {
+    for (const p of cat.phrases) {
+      if (hay.includes(` ${p} `)) return cat.id;
     }
   }
   return null;
+}
+
+/** One group id per listing (title first, then description). */
+export function classifyListing(listing: {
+  title?: string | null;
+  description?: string | null;
+}): string | null {
+  return (
+    firstMatch(listing.title || '') ??
+    firstMatch(stripRelated(listing.description || ''))
+  );
+}
+
+/** Count per group for a set of listings. */
+export function countByCategory(
+  rows: { title?: string | null; description?: string | null }[]
+): Record<string, number> {
+  const counts: Record<string, number> = Object.fromEntries(
+    VENDING_CATEGORY_IDS.map((id) => [id, 0])
+  );
+  for (const r of rows) {
+    const id = classifyListing(r);
+    if (id) counts[id] += 1;
+  }
+  return counts;
 }
