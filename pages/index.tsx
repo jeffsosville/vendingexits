@@ -3,6 +3,8 @@ import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import InquiryForm from '../components/InquiryForm';
+import { categoryOrFilter } from '../lib/vendingCategories';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL as string,
@@ -26,6 +28,7 @@ type Stats = {
   total: number;
   addedThisWeek: number;
   verifiedToday: number;
+  airVac: number;
 };
 
 const money = (n?: number | null) =>
@@ -72,10 +75,23 @@ export async function getServerSideProps() {
     .eq('is_active', true)
     .gte('last_verified_at', today.toISOString());
 
+  // Air & Vac listings count (same keyword match as the /listings tab)
+  let airVacCount = 0;
+  const airVacFilter = categoryOrFilter('air-vac');
+  if (airVacFilter) {
+    const { count } = await supabase
+      .from("vending_listings_merge")
+      .select("*", { count: 'exact', head: true })
+      .eq('is_active', true)
+      .or(airVacFilter);
+    airVacCount = count || 0;
+  }
+
   const stats: Stats = {
     total: totalCount || 0,
     addedThisWeek: weekCount || 0,
     verifiedToday: todayCount || 0,
+    airVac: airVacCount,
   };
 
   const top10 = (data ?? []).map((r: any) => ({
@@ -113,7 +129,7 @@ export default function Home({
     <>
       <Head>
         <title>Vending Exits — {stats.total} Verified Vending Businesses For Sale</title>
-        <meta name="description" content="Find profitable vending machine businesses for sale. Browse beverage vending, snack machines, combo vending routes, and specialty vending operations." />
+        <meta name="description" content="Find profitable vending machine businesses for sale. Browse air and vacuum routes, beverage and snack vending, combo routes, and specialty vending operations. Free valuations for air & vac route owners." />
       </Head>
 
       <Header />
@@ -131,6 +147,54 @@ export default function Home({
             No franchises. No spam. No dead listings.
           </p>
         </header>
+
+        {/* AIR & VAC — sellers first */}
+        <section id="air-vac" className="mb-10 scroll-mt-24">
+          <div className="rounded-2xl border-2 border-amber-500 bg-amber-50 overflow-hidden shadow-sm">
+            <div className="grid md:grid-cols-2">
+              <div className="p-6 md:p-8">
+                <div className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                  <span aria-hidden>🌬️</span> Air &amp; Vac Routes
+                </div>
+                <h2 className="mt-4 text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900">
+                  Own air &amp; vacuum machines? Find out what your route is worth.
+                </h2>
+                <p className="mt-3 text-gray-700">
+                  Tire inflation and coin-op vacuum routes at gas stations, c-stores and car washes
+                  are some of the steadiest cash flow in vending. We put them in front of buyers
+                  who already know the model.
+                </p>
+                <ul className="mt-5 space-y-2 text-sm text-gray-800">
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-600 font-bold">✓</span>
+                    <span>Free, confidential valuation — no listing commitment</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-600 font-bold">✓</span>
+                    <span>Buyers sign an NDA before they see your locations</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-600 font-bold">✓</span>
+                    <span>From the team behind 200+ ATM route sales worth $100M+</span>
+                  </li>
+                </ul>
+                <Link
+                  href="/listings?category=air-vac"
+                  className="mt-6 inline-flex items-center gap-1 text-amber-700 hover:text-amber-800 font-semibold text-sm"
+                >
+                  {stats.airVac > 0
+                    ? `Buying? Browse ${stats.airVac} Air & Vac listings →`
+                    : 'Buying? Browse Air & Vac listings →'}
+                </Link>
+              </div>
+              <div className="bg-white p-6 md:p-8 border-t md:border-t-0 md:border-l border-amber-200">
+                <h3 className="text-lg font-bold mb-1">Get your free valuation</h3>
+                <p className="text-sm text-gray-600 mb-4">We&apos;ll follow up within one business day.</p>
+                <InquiryForm mode="seller" accent="amber" tag="Air & Vac" />
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* EMAIL CAPTURE */}
         <section className="mb-8">

@@ -102,7 +102,14 @@ export const ListingsGrid: React.FC = () => {
 
   useEffect(() => {
     fetchCounts();
-    fetchListings();
+    // Deep link: /listings?category=air-vac opens on that tab
+    const fromUrl = new URLSearchParams(window.location.search).get('category');
+    if (fromUrl && VENDING_CATEGORIES.some((c) => c.id === fromUrl)) {
+      setActiveCategory(fromUrl);
+      fetchListings(filters, 1, fromUrl);
+    } else {
+      fetchListings();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
