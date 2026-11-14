@@ -10,6 +10,7 @@
 import Head from 'next/head';
 import { useState, useMemo } from 'react';
 import BaseStyles from '../components/BaseStyles';
+import InquiryForm from '../components/InquiryForm';
 import { getSiteConfig } from '../lib/siteConfig';
 import {
   getNationalStats,
@@ -278,14 +279,13 @@ export default function ValuationPage({ cfg, national, bands, generatedAt }) {
               depends on contract quality, owner dependence, and how the books present &mdash;
               none of which a calculator can see.
             </p>
-            <p>
-              <a className="btn" href="/sell">
-                Request a valuation review
-              </a>
-            </p>
             <p className="sample">
               No cost, no listing agreement. We look at your numbers and tell you where you sit.
             </p>
+            {/* Inline request: the page used to send sellers off to /sell to find a form. */}
+            <div style={{ textAlign: 'left', marginTop: 20 }}>
+              <InquiryForm mode="seller" />
+            </div>
           </div>
         </section>
 

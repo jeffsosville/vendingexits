@@ -229,3 +229,21 @@ export function filterOurListings(
     return true;
   });
 }
+
+/** In-house listings we have sold, newest first: the track record. */
+export async function getOurSoldListings(): Promise<OurListing[]> {
+  const supabase = crm();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from('inhouse_listings')
+    .select(SELECT)
+    .eq('vertical', VERTICAL)
+    .eq('status', 'sold')
+    .order('listed_on', { ascending: false })
+    .limit(6);
+  if (error) {
+    console.error('getOurSoldListings error:', error.message);
+    return [];
+  }
+  return (data ?? []).map(toListing);
+}

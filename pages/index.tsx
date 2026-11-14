@@ -5,6 +5,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import InquiryForm from '../components/InquiryForm';
 import { VENDING_CATEGORIES, countByCategory } from '../lib/vendingCategories';
+import { getOurListings, getOurSoldListings, type OurListing } from '../data/ourListings';
+import { brokerName } from '../lib/brokerName';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL as string,
@@ -20,14 +22,28 @@ type Top10 = {
   revenue: number | null;
   cash_flow: number | null;
   listing_url: string | null;
-  description: string | null;
-  why_hot: string | null;
+  first_seen: string | null;
+  days_on_market: number | null;
+  broker: string | null;
 };
+
+type Ours = { id: string; title: string; price: number | null; cash_flow: number | null; location: string | null; status: string; ctaHref: string };
+const toOurs = (l: OurListing): Ours => ({
+  id: l.id, title: l.title, price: l.price, cash_flow: l.cash_flow, location: l.location, status: l.status, ctaHref: l.ctaHref,
+});
 
 type Stats = {
   total: number;
-  addedThisWeek: number;
-  verifiedToday: number;
+  new30: number;
+  medianPrice: number | null;
+  medianCashFlow: number | null;
+};
+
+const median = (xs: number[]) => {
+  if (!xs.length) return null;
+  const s = [...xs].sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : Math.round((s[m - 1] + s[m]) / 2);
 };
 
 type Group = { id: string; name: string; emoji: string; blurb: string; count: number };
@@ -42,74 +58,57 @@ const money = (n?: number | null) =>
       });
 
 export async function getServerSideProps() {
-  // Get top 10 vending businesses by price
+  // Every active listing in the feed (vending_listings_merge: cleaned in the DB) - a few dozen rows.
   const { data, error } = await supabase
     .from("vending_listings_merge")
-    .select("*")
-    .eq('is_active', true)
-    .order('price', { ascending: false, nullsFirst: false })
-    .limit(10);
+    .select("listing_id,title,description,city,state,price,cash_flow,listing_url,first_seen,days_on_market,broker_account");
+  const rows = data ?? [];
 
-  // Get total count
-  const { count: totalCount } = await supabase
-    .from("vending_listings_merge")
-    .select("*", { count: 'exact', head: true })
-    .eq('is_active', true);
-
-  // Get count added this week (last 7 days)
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  
-  const { count: weekCount } = await supabase
-    .from("vending_listings_merge")
-    .select("*", { count: 'exact', head: true })
-    .eq('is_active', true)
-    .gte('scraped_at', oneWeekAgo.toISOString());
-
-  // Get count verified today
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  const { count: todayCount } = await supabase
-    .from("vending_listings_merge")
-    .select("*", { count: 'exact', head: true })
-    .eq('is_active', true)
-    .gte('last_verified_at', today.toISOString());
+  const since30 = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
+  const stats: Stats = {
+    total: rows.length,
+    new30: rows.filter((r: any) => (r.first_seen || '') >= since30).length,
+    medianPrice: median(rows.map((r: any) => r.price).filter((v: any) => v > 0)),
+    medianCashFlow: median(rows.map((r: any) => r.cash_flow).filter((v: any) => v > 0)),
+  };
 
   // Per-group counts for "Browse by type" (same classifier as /listings tabs)
-  const { data: lightRows } = await supabase
-    .from("vending_listings_merge")
-    .select("title,description")
-    .eq('is_active', true);
-  const groupCounts = countByCategory(lightRows ?? []);
+  const groupCounts = countByCategory(rows as any[]);
   const groups: Group[] = VENDING_CATEGORIES.filter((c) => c.vending).map((c) => ({
     id: c.id, name: c.name, emoji: c.emoji, blurb: c.blurb, count: groupCounts[c.id] || 0,
   }));
 
-  const stats: Stats = {
-    total: totalCount || 0,
-    addedThisWeek: weekCount || 0,
-    verifiedToday: todayCount || 0,
-  };
-
-  const top10 = (data ?? []).map((r: any) => ({
-    listing_id: r.listing_id ?? null,
+  // Top 10: listings with a price AND reported cash flow first, newest first; then the
+  // rest of the priced listings, newest first. No hand-curation claimed - it's a rule.
+  const priced = rows.filter((r: any) => r.price);
+  const byNew = (a: any, b: any) => (b.first_seen || '').localeCompare(a.first_seen || '');
+  const ranked = [
+    ...priced.filter((r: any) => r.cash_flow).sort(byNew),
+    ...priced.filter((r: any) => !r.cash_flow).sort(byNew),
+  ].slice(0, 10);
+  const top10: Top10[] = ranked.map((r: any) => ({
+    listing_id: r.listing_id != null ? String(r.listing_id) : null,
     title: r.title ?? null,
     city: r.city ?? null,
     state: r.state ?? null,
     price: r.price ?? null,
-    revenue: r.revenue ?? null,
+    revenue: null,
     cash_flow: r.cash_flow ?? null,
     listing_url: r.listing_url ?? null,
-    description: r.description ?? null,
-    why_hot: r.why_hot ?? null,
+    first_seen: r.first_seen ?? null,
+    days_on_market: r.days_on_market ?? null,
+    broker: brokerName(r.broker_account) || null,
   }));
+
+  const [ours, sold] = await Promise.all([getOurListings(), getOurSoldListings()]);
 
   return {
     props: {
       top10,
       stats,
       groups,
+      ours: ours.map(toOurs),
+      sold: sold.map(toOurs),
       errorAuto: error?.message || null,
     },
   };
@@ -119,17 +118,21 @@ export default function Home({
   top10,
   stats,
   groups,
+  ours,
+  sold,
   errorAuto,
 }: {
   top10: Top10[];
   stats: Stats;
   groups: Group[];
+  ours: Ours[];
+  sold: Ours[];
   errorAuto?: string | null;
 }) {
   return (
     <>
       <Head>
-        <title>Vending Exits — {stats.total} Verified Vending Businesses For Sale</title>
+        <title>{`Vending Businesses For Sale — ${stats.total} Routes & Machine Businesses | Vending Exits`}</title>
         <meta name="description" content="Find profitable vending machine businesses for sale. Browse snack and beverage routes, micro markets, bulk, water and ice, air and vacuum, and amusement vending businesses." />
       </Head>
 
@@ -142,20 +145,76 @@ export default function Home({
             Vending Exits
           </h1>
           <p className="mt-4 text-xl md:text-2xl text-gray-800 font-semibold max-w-3xl mx-auto">
-            {stats.total} Verified Vending Businesses
+            {stats.total} vending businesses for sale
           </p>
           <p className="mt-3 text-gray-600 max-w-2xl mx-auto text-lg">
-            No franchises. No spam. No dead listings.
+            Every vending route and machine business we can find on broker websites, checked daily.
+            Bread and snack distribution routes and broker ads filtered out.
           </p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/valuation" className="rounded-xl bg-amber-600 px-6 py-3 text-white font-semibold shadow-md hover:bg-amber-700 transition">
+              What&apos;s my vending business worth? →
+            </Link>
+            <Link href="/listings" className="rounded-xl border border-amber-600 px-6 py-3 text-amber-700 font-semibold hover:bg-amber-50 transition">
+              Browse all {stats.total} listings
+            </Link>
+          </div>
         </header>
+
+        {/* Our own listings, then our track record */}
+        {ours.length > 0 && (
+          <section className="mb-10">
+            <div className="flex items-baseline justify-between mb-3">
+              <h2 className="text-xl font-bold text-gray-900">Exclusive VendingExits listings</h2>
+              <span className="text-sm text-gray-500">Brokered by us · NDA for the full details</span>
+            </div>
+            <div className="space-y-3">
+              {ours.map((l) => (
+                <div key={l.id} className="rounded-2xl border-2 border-amber-200 bg-amber-50/40 p-5 flex flex-col md:flex-row md:items-center gap-4">
+                  <div className="flex-1">
+                    <span className="text-xs bg-amber-600 text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">Exclusive</span>
+                    {l.status === 'under_loi' && <span className="ml-2 text-xs bg-gray-100 text-gray-800 px-2 py-0.5 rounded-full font-bold">Under LOI</span>}
+                    <Link href={`/listing/${l.id}`} className="block mt-1 text-lg font-bold text-gray-900 hover:underline">{l.title}</Link>
+                    <div className="mt-1 text-sm text-gray-600 flex flex-wrap gap-x-4">
+                      <span>Asking <span className="font-semibold text-gray-900">{money(l.price)}</span></span>
+                      {l.cash_flow != null && <span>Cash flow <span className="font-semibold text-gray-900">{money(l.cash_flow)}</span></span>}
+                      {l.location && <span>{l.location}</span>}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Link href={`/listing/${l.id}`} className="px-4 py-2 rounded-lg border border-amber-600 text-amber-700 font-semibold text-sm">View listing</Link>
+                    <a href={l.ctaHref} className="px-4 py-2 rounded-lg bg-amber-600 text-white font-semibold text-sm">Sign NDA</a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+        {sold.length > 0 && (
+          <section className="mb-10 rounded-2xl border border-gray-200 bg-white p-5">
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Recently sold by VendingExits</h2>
+            <ul className="text-sm text-gray-700 space-y-1">
+              {sold.map((l) => (
+                <li key={l.id}>
+                  <span className="font-semibold">{l.title}</span>
+                  {l.price != null && <span className="text-gray-500"> · asking {money(l.price)}</span>}
+                  <span className="ml-2 text-xs bg-gray-900 text-white px-2 py-0.5 rounded-full font-bold">SOLD</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-sm text-gray-600">
+              Thinking about selling? <Link href="/valuation" className="text-amber-700 font-semibold">Get a free, confidential valuation →</Link>
+            </p>
+          </section>
+        )}
 
         {/* EMAIL CAPTURE */}
         <section className="mb-8">
           <div className="bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg p-3 text-white shadow-md max-w-4xl mx-auto">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               <div>
-                <h2 className="text-base font-bold">Weekly Top 10</h2>
-                <p className="text-xs opacity-90">Every Monday. Zero spam.</p>
+                <h2 className="text-base font-bold">Weekly Top 10 by email</h2>
+                <p className="text-xs opacity-90">The newest vending listings with real numbers, every Monday.</p>
               </div>
               
               <Link
@@ -174,29 +233,21 @@ export default function Home({
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
                 <div className="text-3xl md:text-4xl font-bold text-amber-600">{stats.total}</div>
-                <div className="text-sm text-gray-600 mt-1">Verified Listings</div>
+                <div className="text-sm text-gray-600 mt-1">Listings for sale</div>
               </div>
               <div>
-                <div className="text-3xl md:text-4xl font-bold text-amber-600">{stats.addedThisWeek}</div>
-                <div className="text-sm text-gray-600 mt-1">Added This Week</div>
+                <div className="text-3xl md:text-4xl font-bold text-amber-600">{stats.new30}</div>
+                <div className="text-sm text-gray-600 mt-1">New in the last 30 days</div>
               </div>
               <div>
-                <div className="text-3xl md:text-4xl font-bold text-amber-600">{stats.verifiedToday}</div>
-                <div className="text-sm text-gray-600 mt-1">Verified Today</div>
+                <div className="text-3xl md:text-4xl font-bold text-amber-600">{money(stats.medianPrice)}</div>
+                <div className="text-sm text-gray-600 mt-1">
+                  Median asking{stats.medianCashFlow ? ` · ${money(stats.medianCashFlow)} median cash flow` : ''}
+                </div>
               </div>
             </div>
           </div>
         </section>
-
-        {/* Action Button */}
-        <div className="mb-12 flex justify-center">
-          <Link
-            href="/listings"
-            className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-6 py-3 text-white font-semibold shadow-md hover:bg-amber-700 transition"
-          >
-            Explore Full Index
-          </Link>
-        </div>
 
         {/* Browse by type */}
         <section className="mb-12">
@@ -232,8 +283,9 @@ export default function Home({
         {/* Top 10 */}
         <section>
           <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2">
-            Top <span className="text-yellow-500">10</span> This Week
+            Top <span className="text-yellow-500">10</span>: newest listings with real numbers
           </h2>
+          <p className="-mt-4 mb-6 text-sm text-gray-500">Listings that report cash flow come first, newest first.</p>
 
           <ol className="space-y-4">
             {(!top10 || top10.length === 0) && (
@@ -290,22 +342,10 @@ export default function Home({
                       )}
                     </div>
 
-                    {d.why_hot && (
-                      <div className="bg-amber-50 border-l-4 border-amber-400 p-3 rounded-r mb-3">
-                        <div className="flex items-start gap-2">
-                          <span className="text-lg">🔥</span>
-                          <div className="text-sm text-gray-700">
-                            <span className="font-semibold text-gray-900">Why it&apos;s hot:</span> {d.why_hot}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {d.description && (
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                        {d.description}
-                      </p>
-                    )}
+                    <div className="text-xs text-gray-500 mb-3">
+                      {d.days_on_market != null && <>Listed {d.days_on_market === 0 ? 'today' : `${d.days_on_market} days ago`}</>}
+                      {d.broker && <> · via {d.broker}</>}
+                    </div>
 
                     <Link
                       href={d.listing_id ? `/listing/${d.listing_id}` : d.listing_url ?? "#"}
@@ -320,8 +360,7 @@ export default function Home({
           </ol>
 
           <div className="mt-6 text-center text-sm text-gray-500">
-            <p className="font-semibold">Updated weekly</p>
-            <p>Verified • No franchises • No lead-gen</p>
+            <p className="font-semibold">Checked daily against broker websites</p>
           </div>
         </section>
 
@@ -370,7 +409,7 @@ export default function Home({
           <div className="rounded-2xl border border-gray-200 p-6 bg-white">
             <h3 className="font-bold text-lg mb-2">The Vending Index</h3>
             <p className="text-gray-600 mb-4">
-              Browse all {stats.total} verified vending business listings. See which are real and where to find them.
+              Browse all {stats.total} vending business listings, with how long each has been listed and a link to the broker.
             </p>
             <Link
               href="/listings"
@@ -385,15 +424,15 @@ export default function Home({
             <ul className="text-sm text-gray-600 space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-amber-600 font-bold">✓</span>
-                <span>Verified sources over marketplace noise</span>
+                <span>Listings read from broker websites, checked daily</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-600 font-bold">✓</span>
-                <span>Deduped & filtered (no franchise funnels)</span>
+                <span>Deduplicated; broker ads and bread/snack distribution routes filtered out</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-600 font-bold">✓</span>
-                <span>Human-curated Top 10 each week</span>
+                <span>Weekly Top 10 email: newest listings with real numbers</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-600 font-bold">✓</span>

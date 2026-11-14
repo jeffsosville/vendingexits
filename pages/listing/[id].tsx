@@ -1,4 +1,5 @@
 //pages/listing/[id].tsx
+import { brokerName } from '../../lib/brokerName';
 import Head from 'next/head';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
@@ -67,7 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     state: data.state,
     category: data.category,
     listing_url: data.listing_url || '#',
-    broker_account: data.broker_account,
+    broker_account: brokerName(data.broker_account) || null,
     quality_score: data.quality_score,
     days_on_market: data.days_on_market,
     listing_views: data.listing_views,
