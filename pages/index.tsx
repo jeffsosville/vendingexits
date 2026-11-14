@@ -343,7 +343,7 @@ export default function Home({
                     </div>
 
                     <div className="text-xs text-gray-500 mb-3">
-                      {d.days_on_market != null && <>Listed {d.days_on_market === 0 ? 'today' : `${d.days_on_market} days ago`}</>}
+                      {d.days_on_market != null && <>Listed {d.days_on_market === 0 ? 'today' : d.days_on_market === 1 ? 'yesterday' : `${d.days_on_market} days ago`}</>}
                       {d.broker && <> · via {d.broker}</>}
                     </div>
 
