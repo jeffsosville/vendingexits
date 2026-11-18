@@ -213,7 +213,7 @@ function buyerHtml(i: CreateTokenInput, url: string): string {
 <p>Questions go through the data room and we will respond promptly.</p>
 <p>Thanks again,<br>&mdash; The VendingExits Team</p>
 <p style="font-size:12px;color:#8a8275;margin-top:32px;border-top:1px solid #e5e0d5;padding-top:16px;">
-<a href="https://vendingexits.com" style="color:#8a8275;">vendingexits.com</a> &middot; <a href="mailto:sales@vendingexits.com" style="color:#8a8275;">sales@vendingexits.com</a> &middot; +1 888-430-5535
+<a href="https://vendingexits.com" style="color:#8a8275;">vendingexits.com</a> &middot; <a href="mailto:sales@vendingexits.com" style="color:#8a8275;">sales@vendingexits.com</a> &middot; +1 888-820-7798
 </p></body></html>`.trim();
 }
 
@@ -230,7 +230,7 @@ ${url}
 Questions go through the data room and we will respond promptly.
 
 -- The VendingExits Team
-vendingexits.com | sales@vendingexits.com | +1 888-430-5535
+vendingexits.com | sales@vendingexits.com | +1 888-820-7798
 `;
 }
 

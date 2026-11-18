@@ -61,6 +61,11 @@ export default function Footer() {
           <p className="text-sm font-semibold text-gray-700 mb-2">
             Built for speed and signal. No fluff.
           </p>
+          <p className="text-sm text-gray-600 mb-2">
+            <a href="tel:+18888207798" className="hover:text-amber-600 transition">
+              (888) 820-7798
+            </a>
+          </p>
           <p className="text-sm text-gray-500">
             © 2025 Vending Exits. All rights reserved.
           </p>
